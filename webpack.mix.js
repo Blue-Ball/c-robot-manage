@@ -28,6 +28,7 @@ mix
         {
           test: /\.s[ac]ss$/i,
           use: [
+            'vue-style-loader',
             {
               loader: 'sass-loader',
               options: {

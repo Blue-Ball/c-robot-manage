@@ -173,5 +173,17 @@
   "Layout Boxed": "Layout Boxed",
   "Without Menu": "Without Menu",
   "Layout Empty": "Layout Empty",
-  "Layout Blank": "Layout Blank"
+  "Layout Blank": "Layout Blank",
+  "home":{
+    "taskTable":{
+      "Title": "Last Performed Tasks"
+    },
+    "robotData":{
+      "TotalTime" : "Total usage time",
+      "AverageTime" : "Average usage duration",
+      "RoomsCount" : "Rooms disinfected count",
+      "CorridorsCount" : "Corridors disinfected count",
+      "completed" : "completed tasks"
+    }
+  }
 }
