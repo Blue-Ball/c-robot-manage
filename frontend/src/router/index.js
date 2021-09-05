@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { canNavigate } from '@/libs/acl/routeProtection'
+import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
 
 Vue.use(VueRouter)
 
@@ -25,14 +27,14 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/second-page',
-      name: 'second-page',
-      component: () => import('@/views/SecondPage.vue'),
+      path: '/hospital-map',
+      name: 'hospital-map',
+      component: () => import('@/views/HospitalMap.vue'),
       meta: {
-        pageTitle: 'Second Page',
+        pageTitle: 'Hospital Map',
         breadcrumb: [
           {
-            text: 'Second Page',
+            text: 'Hospital Map',
             active: true,
           },
         ],
@@ -41,9 +43,31 @@ const router = new VueRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/Login.vue'),
+      component: () => import('@/views/authentication/Login.vue'),
       meta: {
         layout: 'full',
+        resource: 'Auth',
+        redirectIfLoggedIn: true,
+      },
+    },
+    {
+      path: '/register',
+      name: 'auth-register',
+      component: () => import('@/views/authentication/Register.vue'),
+      meta: {
+        layout: 'full',
+        resource: 'Auth',
+        redirectIfLoggedIn: true,
+      },
+    },
+    {
+      path: '/forgot-password',
+      name: 'auth-forgot-password',
+      component: () => import('@/views/authentication/ForgotPassword.vue'),
+      meta: {
+        layout: 'full',
+        resource: 'Auth',
+        redirectIfLoggedIn: true,
       },
     },
     {
@@ -59,6 +83,26 @@ const router = new VueRouter({
       redirect: 'error-404',
     },
   ],
+})
+
+router.beforeEach((to, _, next) => {
+  const isLoggedIn = isUserLoggedIn()
+
+  if (!canNavigate(to)) {
+    // Redirect to login if not logged in
+    if (!isLoggedIn) return next({ name: 'login' })
+
+    // If logged in => not authorized
+    return next({ name: 'home' })
+  }
+
+  // Redirect if logged in
+  if (to.meta.redirectIfLoggedIn && isLoggedIn) {
+    const userData = getUserData()
+    next(getHomeRouteForLoggedInUser(userData ? userData.role : null))
+  }
+
+  return next()
 })
 
 // ? For splash screen

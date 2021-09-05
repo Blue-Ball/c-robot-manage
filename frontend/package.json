@@ -37,6 +37,7 @@
     "uuid": "8.3.2",
     "vee-validate": "3.4.5",
     "vue": "2.x",
+    "vue-axios": "^2.1.4",
     "vue-apexcharts": "1.6.0",
     "vue-autosuggest": "2.2.0",
     "vue-awesome-swiper": "4.1.1",

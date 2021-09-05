@@ -173,5 +173,30 @@
   "Layout Boxed": "Layout Boxed",
   "Without Menu": "Without Menu",
   "Layout Empty": "Layout Empty",
-  "Layout Blank": "Layout Blank"
+  "Layout Blank": "Layout Blank",
+  "home":{
+    "taskTable":{
+      "Title": "Last Performed Tasks"
+    },
+    "robotData":{
+      "TotalTime" : "Total usage time",
+      "AverageTime" : "Average usage duration",
+      "RoomsCount" : "Rooms disinfected count",
+      "CorridorsCount" : "Corridors disinfected count",
+      "completed" : "completed tasks"
+    },
+    "chart":{
+      "Title" : "Performed Tasks By Day"
+    }
+  },
+  "Home": "Home",
+  "Hospital Map": "Hospital Map",
+
+  "Please select an robot": "Please select an robot",
+  
+  "Surgery": "Surgery",
+  "Emergency": "Emergency",
+  "Pharmacy": "Pharmacy",
+  "Orthopedic": "Orthopedic",
+  "X-ray": "X-ray"
 }

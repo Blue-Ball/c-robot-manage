@@ -5,8 +5,8 @@ export default [
     icon: 'HomeIcon',
   },
   {
-    title: 'Second Page',
-    route: 'second-page',
+    title: 'Hospital Map',
+    route: 'hospital-map',
     icon: 'FileIcon',
   },
 ]
