@@ -184,6 +184,19 @@
       "RoomsCount" : "Rooms disinfected count",
       "CorridorsCount" : "Corridors disinfected count",
       "completed" : "completed tasks"
+    },
+    "chart":{
+      "Title" : "Performed Tasks By Day"
     }
-  }
+  },
+  "Home": "Home",
+  "Hospital Map": "Hospital Map",
+
+  "Please select an robot": "Please select an robot",
+  
+  "Surgery": "Surgery",
+  "Emergency": "Emergency",
+  "Pharmacy": "Pharmacy",
+  "Orthopedic": "Orthopedic",
+  "X-ray": "X-ray"
 }

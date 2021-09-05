@@ -25,14 +25,14 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/second-page',
-      name: 'second-page',
-      component: () => import('@/views/SecondPage.vue'),
+      path: '/hospital-map',
+      name: 'hospital-map',
+      component: () => import('@/views/HospitalMap.vue'),
       meta: {
-        pageTitle: 'Second Page',
+        pageTitle: 'Hospital Map',
         breadcrumb: [
           {
-            text: 'Second Page',
+            text: 'Hospital Map',
             active: true,
           },
         ],
