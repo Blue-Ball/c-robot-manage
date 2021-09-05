@@ -152,7 +152,7 @@ export default {
   },
   data() {
     return {
-      selected: null,
+      selected: "a",
       option: [
         { value: null, text: "Please select an robot" },
         { value: "a", text: "CBOT 1" },
@@ -360,6 +360,12 @@ export default {
         },
       },
     };
+  },
+  computed: {
+    selectPast7Days() {
+      console.log("aaaaaa", Date.now().getDate());
+      Date.now().getDate();
+    },
   },
 };
 </script>

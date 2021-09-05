@@ -95,17 +95,17 @@ export default class JwtService {
     localStorage.setItem(this.jwtConfig.storageRefreshTokenKeyName, value)
   }
 
-  login(...args) {
-    return this.axiosIns.post(this.jwtConfig.loginEndpoint, ...args)
-  }
+  // login(...args) {
+  //   return this.axiosIns.post(this.jwtConfig.loginEndpoint, ...args)
+  // }
 
-  register(...args) {
-    return this.axiosIns.post(this.jwtConfig.registerEndpoint, ...args)
-  }
+  // register(...args) {
+  //   return this.axiosIns.post(this.jwtConfig.registerEndpoint, ...args)
+  // }
 
-  refreshToken() {
-    return this.axiosIns.post(this.jwtConfig.refreshEndpoint, {
-      refreshToken: this.getRefreshToken(),
-    })
-  }
+  // refreshToken() {
+  //   return this.axiosIns.post(this.jwtConfig.refreshEndpoint, {
+  //     refreshToken: this.getRefreshToken(),
+  //   })
+  // }
 }

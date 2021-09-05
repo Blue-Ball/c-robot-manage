@@ -6,6 +6,7 @@ import i18n from '@/libs/i18n'
 import router from './router'
 import store from './store'
 import App from './App.vue'
+import ApiService from "@core/services/api.service";
 
 // Global Components
 import './global-components'
@@ -20,6 +21,9 @@ Vue.use(ModalPlugin)
 
 // Composition API
 Vue.use(VueCompositionAPI)
+
+// API service init
+ApiService.init();
 
 // Feather font icon - For form-wizard
 // * Shall remove it if not using font-icons of feather-icons - For form-wizard
