@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+use Tymon\JWTAuth\Contracts\JWTSubject; // Add this line
+
+class User extends Authenticatable implements JWTSubject // Added here
 {
     use HasFactory, Notifiable;
 
@@ -20,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
+        'status',
+        'token',
     ];
 
     /**
@@ -40,4 +45,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Add this method
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    // Add this method
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+    
+    protected $table = 'users';
 }
