@@ -7,7 +7,7 @@
             <b-col cols="1"> </b-col>
             <b-col class="color-red">{{ $t(mapDatas.dep_name) }}</b-col>
           </b-row>
-          <b-row v-for="floor in mapDatas.floor_data" v-bind:key="floor.id">
+          <b-row v-for="floor in reversedFloorData" v-bind:key="floor.id">
             <div class="w-100"></div>
             <b-col cols="1" class="color-red">{{ floor.id }}</b-col>
             <b-col v-for="rooms in floor.room" :key="rooms.id">{{ rooms.id }}</b-col>
@@ -147,8 +147,11 @@ export default {
     };
   },
   methods: {
-    arrReverse(data) {
-      return data.reverse();
+    reversedFloorData() {
+      let rev = this.sets.map((s) => {
+        return s.floor_data.slice().reverse();
+      });
+      return rev.flat();
     },
     getRoomNum(numbers) {
       console.log("numbers", numbers);

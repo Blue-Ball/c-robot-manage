@@ -12,7 +12,7 @@ const ApiService = {
     Vue.axios.defaults.baseURL =
       process.env.NODE_ENV === "production"
         ? "http://95.217.190.94"
-        : "http://10.10.11.22";
+        : "http://10.10.11.22:8000";
   },
 
   /**

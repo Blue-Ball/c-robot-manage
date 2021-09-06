@@ -31,12 +31,10 @@ const getters = {
 
 const actions = {
   [LOGIN](context, credentials) {
-    console.log("LOGIN : ");
-    console.log(context);
     return new Promise((resolve, reject) => {
       ApiService.post("/api/user/login", credentials)
         .then(({ data }) => {
-          console.log(data);
+          console.log("data", data);
           context.commit(SET_AUTH, data);
           resolve(data);
         })
@@ -53,10 +51,9 @@ const actions = {
   
   [REGISTER](context, credentials) {
     return new Promise((resolve, reject) => {
-      ApiService.post("signup", credentials)
+      ApiService.post("/api/user/register", credentials)
         .then(({ data }) => {
-          //console.log("regist-data", data);
-          //context.commit(SET_AUTH, data);
+          console.log("regist-data", data);
           resolve(data);
         })
         .catch(error => {

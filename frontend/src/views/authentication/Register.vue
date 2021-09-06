@@ -75,6 +75,38 @@
               </validation-provider>
             </b-form-group>
 
+            <!-- re_password -->
+            <b-form-group label="Password Confirm" label-for="re_password">
+              <validation-provider
+                #default="{ errors }"
+                name="re_password"
+                rules="required"
+              >
+                <b-input-group
+                  class="input-group-merge"
+                  :class="errors.length > 0 ? 'is-invalid' : null"
+                >
+                  <b-form-input
+                    id="re_password"
+                    v-model="re_password"
+                    :type="passwordFieldType"
+                    :state="errors.length > 0 ? false : null"
+                    class="form-control-merge"
+                    name="register-password-confirm"
+                    placeholder="············"
+                  />
+                  <b-input-group-append is-text>
+                    <feather-icon
+                      :icon="passwordToggleIcon"
+                      class="cursor-pointer"
+                      @click="togglePasswordVisibility"
+                    />
+                  </b-input-group-append>
+                </b-input-group>
+                <small class="text-danger">{{ errors[0] }}</small>
+              </validation-provider>
+            </b-form-group>
+
             <!-- checkbox -->
             <!-- <b-form-group>
               <b-form-checkbox
@@ -151,6 +183,7 @@ export default {
       regEmail: "",
       username: "",
       password: "",
+      re_password: "",
       status: "",
 
       // validation rules
@@ -164,24 +197,11 @@ export default {
     },
   },
   methods: {
-    validationForm() {
-      this.$refs.registerForm.validate().then((success) => {
-        if (success) {
-          this.$toast({
-            component: ToastificationContent,
-            props: {
-              title: "Form Submitted",
-              icon: "EditIcon",
-              variant: "success",
-            },
-          });
-        }
-      });
-    },
     register() {
-      const name = this.$refs.fullname.value;
-      const email = this.$refs.remail.value;
-      const password = this.$refs.rpassword.value;
+      let name = this.username;
+      let email = this.regEmail;
+      let password = this.password;
+      let re_password = this.re_password;
 
       this.$refs.registerForm.validate().then((success) => {
         if (success) {
@@ -191,6 +211,7 @@ export default {
               name: name,
               email: email,
               password: password,
+              re_password: re_password,
             })
             .then((response) => {
               const { userData } = response.data;
