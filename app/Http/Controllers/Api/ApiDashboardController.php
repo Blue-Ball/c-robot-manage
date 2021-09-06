@@ -173,7 +173,6 @@ class ApiDashboardController extends Controller
         $diff=date_diff($date1,$date2);
         $total_days = $diff->format("%a")+1;
         $average_duration = round($total_useage/$total_days); 
-        $average_duration = floor($average_duration/1000); //milisecond -> second
         $average_hour = floor($average_duration/3600);
         $average_minute = floor(($average_duration%3600)/60);
         $average_sec = $average_duration % 60;
