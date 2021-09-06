@@ -173,21 +173,22 @@ export default {
             .post("/api/user/login", data)
             .then((response) => {
               console.log("response = ", response);
-              const { userData } = response.data.user;
+              const userDate = response.data.user;
               useJwt.setToken(response.data.access_token);
               useJwt.setRefreshToken(response.data.access_token);
-              this.$ability.update({
-                action: "manage",
-                subject: "all",
-              });
+              localStorage.setItem("userData", userDate);
+              // this.$ability.update({
+              //   action: "manage",
+              //   subject: "all",
+              // });
               this.$router
-                .replace(getHomeRouteForLoggedInUser(userData.is_admin))
+                .replace(getHomeRouteForLoggedInUser(userDate.is_admin))
                 .then(() => {
                   this.$toast({
                     component: ToastificationContent,
                     position: "top-right",
                     props: {
-                      title: `Welcome ${userData.name}`,
+                      title: `Welcome userData.name`,
                       icon: "CoffeeIcon",
                       variant: "success",
                       text: `You have successfully logged !`,
