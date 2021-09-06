@@ -162,6 +162,7 @@ class ApiDashboardController extends Controller
         }
 
         $total_useage = $room_total_useage + $corridor_total_useage;
+        $total_useage = floor($total_useage/1000); //milisecond -> second
         $total_hour = floor($total_useage/3600);
         $total_minute = floor(($total_useage%3600)/60);
         $total_sec = $total_useage % 60;
@@ -172,6 +173,7 @@ class ApiDashboardController extends Controller
         $diff=date_diff($date1,$date2);
         $total_days = $diff->format("%a")+1;
         $average_duration = round($total_useage/$total_days); 
+        $average_duration = floor($average_duration/1000); //milisecond -> second
         $average_hour = floor($average_duration/3600);
         $average_minute = floor(($average_duration%3600)/60);
         $average_sec = $average_duration % 60;
@@ -254,8 +256,9 @@ class ApiDashboardController extends Controller
             $row = array();
             $row['unit'] = $performed_task->unit;
             $row['floor'] = $performed_task->floor;
-            $minute = floor($performed_task->duration/60);
-            $second = $performed_task->duration % 60;
+            $task_duration = floor($performed_task->duration/1000);
+            $minute = floor($task_duration/60);
+            $second = $task_duration % 60;
             if(strlen($second) == 1){
                 $second = "0".$second;
             }
