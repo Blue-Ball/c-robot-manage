@@ -177,5 +177,30 @@
   "Layout Boxed": "Layout Boxed",
   "Without Menu": "Ohne Menü",
   "Layout Empty": "Layout leer",
-  "Layout Blank": "Layout leer"
+  "Layout Blank": "Layout leer",
+  "home":{
+    "taskTable":{
+      "Title": "Zuletzt ausgeführte Aufgaben"
+    },
+    "robotData":{
+      "TotalTime" : "Toplam kullanım süresi",
+      "AverageTime" : "Ortalama kullanım süresi",
+      "RoomsCount" : "Oda dezenfekte sayısı",
+      "CorridorsCount" : "Koridorlar dezenfekte edildi",
+      "completed" : "tamamlanmış görevler"
+    },
+    "chart":{
+      "Title" : "Güne Göre Gerçekleştirilen Görevler"
+    }
+  },
+  "Home": "Ev",
+  "Hospital Map": "Hastane Haritası",
+
+  "Please select an robot": "Lütfen bir robot seçin",
+
+  "Surgery": "Ameliyat",
+  "Emergency": "Acil Durum",
+  "Pharmacy": "Eczane",
+  "Orthopedic": "Ortopedik",
+  "X-ray": "Röntgen"
 }
