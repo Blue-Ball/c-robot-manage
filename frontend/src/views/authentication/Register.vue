@@ -155,8 +155,8 @@ import VuexyLogo from "@core/layouts/components/Logo.vue";
 import { required, email } from "@validations";
 import { togglePasswordVisibility } from "@core/mixins/ui/forms";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
-import { REGISTER } from "@core/services/store/auth.module";
 import { getHomeRouteForRegister } from "@/auth/utils";
+import axios from "axios";
 
 export default {
   components: {
@@ -198,23 +198,19 @@ export default {
   },
   methods: {
     register() {
-      let name = this.username;
-      let email = this.regEmail;
-      let password = this.password;
-      let re_password = this.re_password;
+      const formData = {
+        name: this.username,
+        email: this.regEmail,
+        password: this.password,
+        re_password: this.re_password,
+      };
 
       this.$refs.registerForm.validate().then((success) => {
         if (success) {
           // send register request
-          this.$store
-            .dispatch(REGISTER, {
-              name: name,
-              email: email,
-              password: password,
-              re_password: re_password,
-            })
+          axios
+            .post("/api/user/register", formData)
             .then((response) => {
-              const { userData } = response.data;
               this.$router.replace(getHomeRouteForRegister()).then(() => {
                 this.$toast({
                   component: ToastificationContent,

@@ -89,7 +89,6 @@
         </b-card>
       </b-col>
     </b-row>
-
     <b-row>
       <b-col md="6">
         <b-card>
@@ -133,6 +132,8 @@ import {
 import flatPickr from "vue-flatpickr-component";
 import AppEchartBar from "@core/components/charts/echart/AppEchartBar.vue";
 import VueApexCharts from "vue-apexcharts";
+import axios from "axios";
+import useJwt from "@/auth/jwt/useJwt";
 
 export default {
   components: {
@@ -361,11 +362,34 @@ export default {
       },
     };
   },
-  computed: {
-    selectPast7Days() {
-      console.log("aaaaaa", Date.now().getDate());
-      Date.now().getDate();
-    },
+  // props: {
+  //   rangeDate: {
+  //     type: String,
+  //     default: this.selectPast7Days(),
+  //   },
+  // },
+  mounted() {
+    var formatted_date = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
+
+    const params = {
+      robot_serial: "1",
+      start_date: "2021/9/1",
+      end_date: formatted_date,
+    };
+    console.log("params = ", params);
+    axios
+      .post("/api/user/dashboard", params, {
+        headers: {
+          Authorization: useJwt.getToken(),
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        this.$refs.loginForm.setErrors(error.response.data.error);
+      });
   },
+  methods: {},
 };
 </script>

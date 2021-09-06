@@ -117,7 +117,9 @@ import VuexyLogo from "@core/layouts/components/Logo.vue";
 import { required, email } from "@validations";
 import { togglePasswordVisibility } from "@core/mixins/ui/forms";
 
-import { LOGIN } from "@core/services/store/auth.module";
+// import { LOGIN } from "@core/services/store/auth.module";
+import axios from "axios";
+import useJwt from "@/auth/jwt/useJwt";
 import { getHomeRouteForLoggedInUser } from "@/auth/utils";
 
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
@@ -163,26 +165,32 @@ export default {
 
       this.$refs.loginForm.validate().then((success) => {
         if (success) {
-          this.$store
-            .dispatch(LOGIN, { email, password })
+          const data = {
+            email: email,
+            password: password,
+          };
+          axios
+            .post("/api/user/login", data)
             .then((response) => {
-              const { userData } = response.data;
-              // useJwt.setToken(response.data.accessToken);
-              // useJwt.setRefreshToken(response.data.refreshToken);
-              localStorage.setItem("userData", JSON.stringify(userData));
-              this.$ability.update(userData.ability);
-
+              console.log("response = ", response);
+              const { userData } = response.data.user;
+              useJwt.setToken(response.data.access_token);
+              useJwt.setRefreshToken(response.data.access_token);
+              this.$ability.update({
+                action: "manage",
+                subject: "all",
+              });
               this.$router
-                .replace(getHomeRouteForLoggedInUser(userData.role))
+                .replace(getHomeRouteForLoggedInUser(userData.is_admin))
                 .then(() => {
                   this.$toast({
                     component: ToastificationContent,
                     position: "top-right",
                     props: {
-                      title: `Welcome ${userData.fullName || userData.username}`,
+                      title: `Welcome ${userData.name}`,
                       icon: "CoffeeIcon",
                       variant: "success",
-                      text: `You have successfully logged in as ${userData.role}. Now you can start to explore!`,
+                      text: `You have successfully logged !`,
                     },
                   });
                 });
