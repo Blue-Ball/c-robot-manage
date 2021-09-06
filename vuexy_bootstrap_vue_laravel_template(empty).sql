@@ -30,6 +30,8 @@ CREATE TABLE `corridor_disinfection_table` (
   `duration` int(11) DEFAULT 0,
   `is_completed` tinyint(1) DEFAULT 0,
   `robot_serial` varchar(255) DEFAULT '' COMMENT 'robots_info_table primary_key',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -48,6 +50,19 @@ CREATE TABLE `hospital_rooms_table` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/*Table structure for table `migrations` */
+
+DROP TABLE IF EXISTS `migrations`;
+
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `migrations` */
+
 /*Table structure for table `robots_info_table` */
 
 DROP TABLE IF EXISTS `robots_info_table`;
@@ -57,7 +72,8 @@ CREATE TABLE `robots_info_table` (
   `robot_name` varchar(255) DEFAULT '',
   `robot_password` varchar(255) DEFAULT '',
   `robot_number` varchar(255) DEFAULT '',
-  `robot_image` varchar(255) DEFAULT '',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`robot_serial`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -75,6 +91,8 @@ CREATE TABLE `room_disinfection_table` (
   `duration` int(11) DEFAULT 0,
   `is_completed` tinyint(1) DEFAULT 0,
   `robot_serial` varchar(255) DEFAULT '' COMMENT 'robots_info_table primary_key',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -88,18 +106,19 @@ CREATE TABLE `users` (
   `password` varchar(255) DEFAULT '',
   `email` varchar(255) DEFAULT '',
   `is_admin` tinyint(1) DEFAULT 0 COMMENT '0:general,1:admin',
+  `robot_serial` varchar(255) DEFAULT '',
   `status` tinyint(1) DEFAULT 0 COMMENT '0:deactive,1:active',
   `token` varchar(255) DEFAULT '',
   `remember_token` varchar(255) DEFAULT '',
   `created_at` datetime DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`name`,`password`,`email`,`is_admin`,`status`,`token`,`remember_token`,`created_at`,`updated_at`) values 
-(1,'test','$2y$10$Am9CgaeRu34xYOiQ3NTbWeSQM7rEfHZ2j.qrPluktjX0EboSn8v1G','test@test.com',1,1,'2NaqzwmXo1jLVEHMmTyiPoLq','','2021-09-02 03:37:24','2021-09-03 03:37:14');
+insert  into `users`(`id`,`name`,`password`,`email`,`is_admin`,`robot_serial`,`status`,`token`,`remember_token`,`created_at`,`updated_at`) values 
+(1,'test','$2y$10$Am9CgaeRu34xYOiQ3NTbWeSQM7rEfHZ2j.qrPluktjX0EboSn8v1G','test@test.com',1,'',1,'2NaqzwmXo1jLVEHMmTyiPoLq','','2021-09-02 03:37:24','2021-09-05 15:21:25');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

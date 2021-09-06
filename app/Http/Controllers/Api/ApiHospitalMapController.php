@@ -42,6 +42,11 @@ class ApiHospitalMapController extends Controller
      */
     public function hospitalMap(Request $request){
         if (auth()->check()) {
+            print_r($request->header());
+            $user = auth()->user();
+            if(!empty($user->robot_serial)){
+                return $this->error(-1,trans('main.not_user'));
+            }
             $unit_list = DB::table('hospital_rooms_table')
                 ->selectRaw('hospital_rooms_table.unit')
                 ->groupBy('hospital_rooms_table.unit')
@@ -65,7 +70,7 @@ class ApiHospitalMapController extends Controller
                 }
             }
             // print_r($room_map_list);
-            return $this->response($room_map_list);
+            // return $this->response($room_map_list);
         }else{
             return $this->error(-1,trans('main.please_login'));
         }
