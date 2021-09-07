@@ -42,7 +42,6 @@ class ApiHospitalMapController extends Controller
      */
     public function hospitalMap(Request $request){
         if (auth()->check()) {
-            print_r($request->header());
             $user = auth()->user();
             if(!empty($user->robot_serial)){
                 return $this->error(-1,trans('main.not_user'));
@@ -55,22 +54,45 @@ class ApiHospitalMapController extends Controller
                 ->selectRaw("hospital_rooms_table.*")
                 ->orderBy('hospital_rooms_table.floor', 'desc');
             $room_list = $query->get();
-            $room_map_list = array();
+            // $room_map_list = array();
+            // foreach($unit_list as $row_u){
+            //     $room_map_list[$row_u->unit] = array();
+            //     foreach($room_list as $row_f){
+            //         if($row_u->unit == $row_f->unit){
+            //             $room_map_list[$row_u->unit][$row_f->floor] = array();
+            //             foreach($room_list as $row_r){
+            //                 if($row_f->unit == $row_r->unit && $row_f->floor == $row_r->floor){
+            //                     $room_map_list[$row_u->unit][$row_f->floor][] = $row_r->room_number;
+            //                 }                            
+            //             }
+            //         }
+            //     }
+            // }
+            $map_data = array();
             foreach($unit_list as $row_u){
-                $room_map_list[$row_u->unit] = array();
+                $r_unit = array();
+                $r_unit['id'] = $row_u->unit;
+                $r_unit['floor_data'] = array();
+
                 foreach($room_list as $row_f){
                     if($row_u->unit == $row_f->unit){
-                        $room_map_list[$row_u->unit][$row_f->floor] = array();
+                        $r_floor = array();
+                        $r_floor['id'] = $row_f->floor;
+                        $r_floor['room_data'] = array();
                         foreach($room_list as $row_r){
                             if($row_f->unit == $row_r->unit && $row_f->floor == $row_r->floor){
-                                $room_map_list[$row_u->unit][$row_f->floor][] = $row_r->room_number;
+                                $r_room = array();
+                                $r_room['id'] = $row_r->room_number;
+                                $r_floor['room_data'][] = $r_room;
                             }                            
                         }
+                        $r_unit['floor_data'][] = $r_floor;
                     }
                 }
+                $map_data[] = $r_unit;
             }
-            // print_r($room_map_list);
-            // return $this->response($room_map_list);
+            // print_r($map_data);
+            return $this->response($map_data);
         }else{
             return $this->error(-1,trans('main.please_login'));
         }

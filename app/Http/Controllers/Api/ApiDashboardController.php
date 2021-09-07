@@ -56,6 +56,8 @@ class ApiDashboardController extends Controller
             if(!empty($request->room)){
                 $room = $request->room;
             }
+
+            $robot_list = $this->getRobotList();
             
             if(!empty($robot_serial) && !empty($start_date) && !empty($end_date)){
                 $robot_info = $this->getRobotInfo($robot_serial);
@@ -70,6 +72,7 @@ class ApiDashboardController extends Controller
                 $performed_task_day_info = array();
                 $performed_task_unit_info = array();
             }  
+            $dashboard_info['robot_list'] = $robot_list;
             $dashboard_info['robot_info'] = $robot_info;
             $dashboard_info['total_info'] = $total_info;
             $dashboard_info['performed_task_info'] = $performed_task_info;
@@ -80,6 +83,19 @@ class ApiDashboardController extends Controller
         }else{
             return $this->error(-1,trans('main.please_login'));
         }        	
+    }
+
+    public function getRobotList(){
+        $robot_list = DB::table('robots_info_table')
+            ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
+        $result = array();
+        foreach($robot_list as $robot){
+            $row = array();
+            $row['value'] = $robot->robot_serial;
+            $row['text'] = $robot->robot_name;
+            $result[] = $row;
+        }
+        return $result;
     }
 
     public function getRobotInfo($robot_serial){
