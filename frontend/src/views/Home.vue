@@ -380,14 +380,14 @@ export default {
     axios
       .post("/api/user/dashboard", params, {
         headers: {
-          Authorization: useJwt.getToken(),
+          Authorization: "Bearer " + useJwt.getToken(),
         },
       })
       .then((response) => {
         console.log(response.data);
       })
       .catch((error) => {
-        this.$refs.loginForm.setErrors(error.response.data.error);
+        // this.$refs.loginForm.setErrors(error.response.data.error);
       });
   },
   methods: {},
