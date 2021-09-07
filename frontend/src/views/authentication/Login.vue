@@ -172,38 +172,38 @@ export default {
           axios
             .post("/api/user/login", data)
             .then((response) => {
-              console.log("response = ", response);
               if(response.data.status == 1){
-                const userData = response.data.data.user;
+                console.log("response = ", response);
+                const userDate = response.data.data.user;
                 useJwt.setToken(response.data.data.access_token);
                 useJwt.setRefreshToken(response.data.data.access_token);
-                localStorage.setItem("userData", userData);
+                localStorage.setItem("userData", userDate);
                 // this.$ability.update({
                 //   action: "manage",
                 //   subject: "all",
                 // });
                 this.$router
-                  .replace(getHomeRouteForLoggedInUser(userData.is_admin))
+                  .replace(getHomeRouteForLoggedInUser(userDate.is_admin))
                   .then(() => {
                     this.$toast({
                       component: ToastificationContent,
                       position: "top-right",
                       props: {
-                        title: `Welcome userData.name`,
+                        title: `"Welcome" ${userData.name}`,
                         icon: "CoffeeIcon",
                         variant: "success",
                         text: `You have successfully logged !`,
                       },
                     });
                   });
-              }else{
+              } else {
                 console.log(response.data.error);
-                this.$refs.loginForm.setErrors(response.data.error);
               }
               
             })
             .catch((error) => {
               console.log(error);
+              // this.$refs.loginForm.setErrors(error.response.data.error);
             });
         }
       });

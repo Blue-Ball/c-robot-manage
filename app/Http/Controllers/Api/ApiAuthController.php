@@ -103,6 +103,7 @@ class ApiAuthController extends Controller
     public function userLogin(Request $request){
         $email = $request->email;
         $password = $request->password;
+        auth()->factory()->setTTL(60*24);
         if ($token = auth()->attempt(['email' => $email, 'password' => $password, 'status' => 1])) {
             return $this->createNewToken($token);
         }else{
@@ -143,7 +144,7 @@ class ApiAuthController extends Controller
         $data = [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            'expires_in' => auth()->factory()->getTTL(),
             'user' => auth()->user()
         ];
         return $this->response($data);

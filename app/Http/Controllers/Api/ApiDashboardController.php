@@ -56,7 +56,21 @@ class ApiDashboardController extends Controller
             if(!empty($request->room)){
                 $room = $request->room;
             }
-            
+
+            $robot_infos = DB::table('robots_info_table')
+                ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
+            $robot_list = array();
+            $row = array();
+            $row['value'] = '';
+            $row['text'] = 'Please select an robot';
+            $robot_list[] = $row;
+            foreach($robot_infos as $robot){
+                $row = array();
+                $row['value'] = $robot->robot_serial;
+                $row['text'] = $robot->robot_name;
+                $robot_list[] = $row;
+            }
+                        
             if(!empty($robot_serial) && !empty($start_date) && !empty($end_date)){
                 $robot_info = $this->getRobotInfo($robot_serial);
                 $total_info = $this->getTotalInfo($robot_serial,$start_date,$end_date,$unit,$floor,$room);
@@ -70,6 +84,7 @@ class ApiDashboardController extends Controller
                 $performed_task_day_info = array();
                 $performed_task_unit_info = array();
             }  
+            $dashboard_info['robot_list'] = $robot_list;
             $dashboard_info['robot_info'] = $robot_info;
             $dashboard_info['total_info'] = $total_info;
             $dashboard_info['performed_task_info'] = $performed_task_info;
@@ -80,6 +95,27 @@ class ApiDashboardController extends Controller
         }else{
             return $this->error(-1,trans('main.please_login'));
         }        	
+    }
+
+    public function getRobotList(){
+        if (auth()->check()) {
+            $robot_list = DB::table('robots_info_table')
+                ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
+            $result = array();
+            $row = array();
+            $row['value'] = '';
+            $row['text'] = 'Please select an robot';
+            $result[] = $row;
+            foreach($robot_list as $robot){
+                $row = array();
+                $row['value'] = $robot->robot_serial;
+                $row['text'] = $robot->robot_name;
+                $result[] = $row;
+            }
+            return $this->response($result);
+        }else{
+            return $this->error(-1,trans('main.please_login'));
+        }
     }
 
     public function getRobotInfo($robot_serial){

@@ -86,7 +86,7 @@
 
         <b-dropdown-divider />
 
-        <b-dropdown-item link-class="d-flex align-items-center">
+        <b-dropdown-item link-class="d-flex align-items-center" @click="logout()">
           <feather-icon
             size="16"
             icon="LogOutIcon"
@@ -125,6 +125,13 @@ export default {
       type: Function,
       default: () => {},
     },
+  },
+  methods: {
+    logout(){
+      localStorage.removeItem('userData');
+      // this.$router.push({ path: 'login' });
+      this.$router.replace('/login');
+    }
   },
 }
 </script>
