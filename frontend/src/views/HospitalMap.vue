@@ -1,16 +1,16 @@
 <template>
   <b-row>
-    <b-col v-for="mapDatas in sets" v-bind:key="mapDatas.dep_id">
+    <b-col cols="6" v-for="mapDatas in sets" v-bind:key="mapDatas.id">
       <b-card class="text-center">
         <b-container class="bv-example-row">
           <b-row>
             <b-col cols="1"> </b-col>
-            <b-col class="color-red">{{ $t(mapDatas.dep_name) }}</b-col>
+            <b-col class="color-red">{{ $t(mapDatas.id) }}</b-col>
           </b-row>
-          <b-row v-for="floor in reversedFloorData" v-bind:key="floor.id">
+          <b-row v-for="floor in mapDatas.floor_data" v-bind:key="floor.id">
             <div class="w-100"></div>
             <b-col cols="1" class="color-red">{{ floor.id }}</b-col>
-            <b-col v-for="rooms in floor.room" :key="rooms.id">{{ rooms.id }}</b-col>
+            <b-col v-for="rooms in floor.room_data" :key="rooms.id">{{ rooms.id }}</b-col>
           </b-row>
         </b-container>
       </b-card>
@@ -20,6 +20,8 @@
 
 <script>
 import { BCard, BCardTitle, BCardText, BContainer, BRow, BCol } from "bootstrap-vue";
+import axios from "axios";
+import useJwt from "@/auth/jwt/useJwt";
 
 export default {
   components: {
@@ -34,110 +36,16 @@ export default {
     return {
       sets: [
         {
-          dep_id: "1",
-          dep_name: "Surgery",
+          id: "Emergency",
           floor_data: [
             {
               id: "1",
               room: [
                 {
                   id: 1,
-                  room_size: "23",
                 },
                 {
                   id: 2,
-                  room_size: "23",
-                },
-                {
-                  id: 3,
-                  room_size: "23",
-                },
-                {
-                  id: 4,
-                  room_size: "23",
-                },
-                {
-                  id: 5,
-                  room_size: "23",
-                },
-                {
-                  id: 6,
-                  room_size: "23",
-                },
-              ],
-            },
-            {
-              id: "2",
-              room: [
-                {
-                  id: 1,
-                  room_size: "23",
-                },
-                {
-                  id: 2,
-                  room_size: "23",
-                },
-                {
-                  id: 3,
-                  room_size: "23",
-                },
-              ],
-            },
-            {
-              id: "3",
-              room: [
-                {
-                  id: 1,
-                  room_size: "23",
-                },
-                {
-                  id: 2,
-                  room_size: "23",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          dep_id: "2",
-          dep_name: "Emergency",
-          floor_data: [
-            {
-              id: "1",
-              room: [
-                {
-                  id: 1,
-                  room_size: "23",
-                },
-                {
-                  id: 2,
-                  room_size: "23",
-                },
-              ],
-            },
-            {
-              id: "2",
-              room: [
-                {
-                  id: 1,
-                  room_size: "23",
-                },
-                {
-                  id: 2,
-                  room_size: "23",
-                },
-              ],
-            },
-            {
-              id: "3",
-              room: [
-                {
-                  id: 1,
-                  room_size: "23",
-                },
-                {
-                  id: 2,
-                  room_size: "23",
                 },
               ],
             },
@@ -146,13 +54,29 @@ export default {
       ],
     };
   },
-  methods: {
-    reversedFloorData() {
-      let rev = this.sets.map((s) => {
-        return s.floor_data.slice().reverse();
+  mounted() {
+    axios
+      .post("/api/user/hospital_map", "", {
+        headers: {
+          Authorization: "Bearer " + useJwt.getToken(),
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        const mapInfo = response.data.data;
+        this.sets = mapInfo;
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      return rev.flat();
-    },
+  },
+  methods: {
+    // reversedFloorData() {
+    //   let rev = this.sets.map((s) => {
+    //     return s.floor_data.slice().reverse();
+    //   });
+    //   return rev.flat();
+    // },
     getRoomNum(numbers) {
       console.log("numbers", numbers);
     },
