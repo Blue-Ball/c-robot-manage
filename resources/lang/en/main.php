@@ -31,4 +31,5 @@ return [
     'not_robot' => 'You are not robot',
     'not_user' => 'You are not user',
     'incorrect_login_robot' => 'Incorrect serial or password',
+    'select_robot' => 'Please select an robot',
 ];

@@ -62,7 +62,7 @@ class ApiDashboardController extends Controller
             $robot_list = array();
             $row = array();
             $row['value'] = '';
-            $row['text'] = 'Please select an robot';
+            $row['text'] = trans('main.select_robot');
             $robot_list[] = $row;
             foreach($robot_infos as $robot){
                 $row = array();
@@ -104,7 +104,7 @@ class ApiDashboardController extends Controller
             $result = array();
             $row = array();
             $row['value'] = '';
-            $row['text'] = 'Please select an robot';
+            $row['text'] = trans('main.select_robot');
             $result[] = $row;
             foreach($robot_list as $robot){
                 $row = array();

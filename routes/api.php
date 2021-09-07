@@ -24,7 +24,7 @@ Route::group(['middleware' => 'api','prefix'=>'user'], function (){
     Route::post('getUserList','Api\ApiAuthController@getUserList');
     Route::post('changeUserStatus','Api\ApiAuthController@changeUserStatus');
     Route::post('changeUserPassword','Api\ApiAuthController@changeUserPassword');
-    Route::get('getRobotList','Api\ApiDashboardController@getRobotList');
+    Route::post('getRobotList','Api\ApiDashboardController@getRobotList');
     Route::post('dashboard','Api\ApiDashboardController@dashboard');
     Route::post('hospital_map','Api\ApiHospitalMapController@hospitalMap');
 });
