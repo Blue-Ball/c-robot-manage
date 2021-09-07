@@ -37,31 +37,31 @@ class RobotAuthController extends Controller
     public function robotRegister(Request $request){ 
         
         if(empty($request->serial)){
-            return $this->error('-1',trans('main.enter_robot_serial'));
+            return $this->error('-2',trans('main.enter_robot_serial'));
         }
 
         if(empty($request->name)){
-            return $this->error('-1',trans('main.enter_robot_name'));
+            return $this->error('-2',trans('main.enter_robot_name'));
         }
 
         $validator_password = Validator::make(array('password'=>$request->password), [
             'password' => 'required|min:4',
         ]);        
         if ($validator_password->fails()) {
-            return $this->error(-1,trans('main.password_validation_error'));
+            return $this->error(-2,trans('main.password_validation_error'));
         }
 
         if($request->password != $request->re_password) {
-            return $this->error('-1',trans('main.pass_confirmation_same'));
+            return $this->error('-2',trans('main.pass_confirmation_same'));
         }
 
         if(empty($request->number)){
-            return $this->error('-1',trans('main.enter_robot_number'));
+            return $this->error('-2',trans('main.enter_robot_number'));
         }
 
         $duplicateSerial = User::where('robot_serial',$request->serial)->first();
         if($duplicateSerial) {
-            return $this->error(-1,trans('main.robot_exists'));
+            return $this->error(-2,trans('main.robot_exists'));
         }
                 
         $newUser = [
@@ -97,7 +97,7 @@ class RobotAuthController extends Controller
         
         $serial = $request->serial;
         $password = $request->password;
-        auth()->factory()->setTTL(3600*24);
+        auth()->factory()->setTTL(60*24);
         if ($token = auth()->attempt(['robot_serial' => $serial, 'password' => $password, 'status' => 1])) {
             return $this->createNewToken($token);
         }else{
@@ -117,7 +117,7 @@ class RobotAuthController extends Controller
         $data = [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60 * 24, // one day
+            'expires_in' => auth()->factory()->getTTL(), 
             'user' => auth()->user()
         ];
         return $this->response($data);
@@ -152,7 +152,7 @@ class RobotAuthController extends Controller
                     ->get();
                 return $this->response($robot_list);
             }else{
-                return $this->error(-1,trans('main.not_allowed_admin_permission'));
+                return $this->error(-2,trans('main.not_allowed_admin_permission'));
             }            
         }else{
             return $this->error(-1,trans('main.please_login'));
@@ -180,13 +180,13 @@ class RobotAuthController extends Controller
                 }  
                 $userUpdate = User::find($id);              
                 if(empty($userUpdate)){
-                    return $this->error(-1,trans('main.not_find_user'));
+                    return $this->error(-2,trans('main.not_find_user'));
                 }else{                    
                     $userUpdate->update(['status' => $status]);
                     return $this->response(['message'=>trans('main.updated_success')]);
                 }                
             }else{
-                return $this->error(-1,trans('main.not_allowed_admin_permission'));
+                return $this->error(-2,trans('main.not_allowed_admin_permission'));
             }            
         }else{
             return $this->error(-1,trans('main.please_login'));
@@ -204,10 +204,10 @@ class RobotAuthController extends Controller
         if (auth()->check()) {
 
             if(empty($request->new_password)){
-                return $this->error(-1,trans('main.enter_new_password'));
+                return $this->error(-2,trans('main.enter_new_password'));
             } 
             if($request->new_password != $request->re_password) {
-                return $this->error(-1,trans('main.pass_confirmation_same'));
+                return $this->error(-2,trans('main.pass_confirmation_same'));
             }
 
             $user = auth()->user();
@@ -216,7 +216,7 @@ class RobotAuthController extends Controller
 
             $userUpdate = User::find($id);              
             if(empty($userUpdate)){
-                return $this->error(-1,trans('main.not_find_user'));
+                return $this->error(-2,trans('main.not_find_user'));
             }else{                    
                 $userUpdate->update(['password' => $new_password]);
 

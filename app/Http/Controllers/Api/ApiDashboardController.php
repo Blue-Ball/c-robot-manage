@@ -38,7 +38,7 @@ class ApiDashboardController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
             if(!empty($user->robot_serial)){
-                return $this->error(-1,trans('main.not_user'));
+                return $this->error(-2,trans('main.not_user'));
             }
             $dashboard_info = array();
             $robot_serial = $request->robot_serial;
