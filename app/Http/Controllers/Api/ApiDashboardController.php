@@ -89,6 +89,10 @@ class ApiDashboardController extends Controller
         $robot_list = DB::table('robots_info_table')
             ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
         $result = array();
+        $row = array();
+        $row['value'] = '';
+        $row['text'] = 'Please select an robot';
+        $result[] = $row;
         foreach($robot_list as $robot){
             $row = array();
             $row['value'] = $robot->robot_serial;
