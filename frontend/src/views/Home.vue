@@ -367,41 +367,50 @@ export default {
         })
         .then((response) => {
           console.log("=========", response.data);
-          const robotList = response.data.data.robot_list;
-          const robotInfo = response.data.data.total_info;
-          const task_info = response.data.data.performed_task_info;
-          const task_day_info = response.data.data.performed_task_day_info;
-          const task_unit_info = response.data.data.performed_task_unit_info;
+          if(response.data.status == 1){
+            const robotList = response.data.data.robot_list;
+            const robotInfo = response.data.data.total_info;
+            const task_info = response.data.data.performed_task_info;
+            const task_day_info = response.data.data.performed_task_day_info;
+            const task_unit_info = response.data.data.performed_task_unit_info;
 
-          this.option = robotList;
-          this.robot_data = robotInfo;
-          this.items = task_info;
-          const daysOfvalue = task_day_info.map(function (x) {
-            return x.d_cnt;
-          });
-          const daysOflabel = task_day_info.map(function (x) {
-            return x.d_date;
-          });
-          this.chartofday.series = [
-            {
-              data: daysOfvalue,
-            },
-          ];
-          this.chartofday.chartOptions.xaxis.categories = daysOflabel;
+            this.option = robotList;
+            this.robot_data = robotInfo;
+            this.items = task_info;
+            const daysOfvalue = task_day_info.map(function (x) {
+              return x.d_cnt;
+            });
+            const daysOflabel = task_day_info.map(function (x) {
+              return x.d_date;
+            });
+            this.chartofday.series = [
+              {
+                data: daysOfvalue,
+              },
+            ];
+            this.chartofday.chartOptions.xaxis.categories = daysOflabel;
 
-          const unitOfvalue = task_unit_info.map(function (x) {
-            return x.u_cnt;
-          });
-          const unitOflabel = task_unit_info.map(function (x) {
-            return x.unit;
-          });
-          this.chartofunit.series = [
-            {
-              data: unitOfvalue,
-            },
-          ];
-          this.chartofunit.chartOptions.xaxis.categories = unitOflabel;
-          // console.log(this.chartofunit);
+            const unitOfvalue = task_unit_info.map(function (x) {
+              return x.u_cnt;
+            });
+            const unitOflabel = task_unit_info.map(function (x) {
+              return x.unit;
+            });
+            this.chartofunit.series = [
+              {
+                data: unitOfvalue,
+              },
+            ];
+            this.chartofunit.chartOptions.xaxis.categories = unitOflabel;
+            // console.log(this.chartofunit);
+          }else{
+            if(response.data.code != null && response.data.code == '-1'){
+              //logout
+              localStorage.removeItem('userData');
+              this.$router.replace('/login');
+            }
+          }
+          
         })
         .catch((error) => {
           console.log(error);

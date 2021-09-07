@@ -174,16 +174,16 @@ export default {
             .then((response) => {
               if(response.data.status == 1){
                 console.log("response = ", response);
-                const userDate = response.data.data.user;
+                const userData = response.data.data.user;
                 useJwt.setToken(response.data.data.access_token);
                 useJwt.setRefreshToken(response.data.data.access_token);
-                localStorage.setItem("userData", userDate);
+                localStorage.setItem("userData", userData);
                 // this.$ability.update({
                 //   action: "manage",
                 //   subject: "all",
                 // });
                 this.$router
-                  .replace(getHomeRouteForLoggedInUser(userDate.is_admin))
+                  .replace(getHomeRouteForLoggedInUser(userData.is_admin))
                   .then(() => {
                     this.$toast({
                       component: ToastificationContent,
