@@ -44,7 +44,7 @@ class ApiAuthController extends Controller
     public function userRegister(Request $request){ 
         
         if(empty($request->name)){
-            return $this->error('-1',trans('main.enter_user_name'));
+            return $this->error('-2',trans('main.enter_user_name'));
         }
 
         // $validator = Validator::make($request->all(), [
@@ -57,27 +57,27 @@ class ApiAuthController extends Controller
             'password' => 'required|min:4',
         ]);        
         if ($validator_password->fails()) {
-            return $this->error(-1,trans('main.password_validation_error'));
+            return $this->error(-2,trans('main.password_validation_error'));
         }
 
         if($request->password != $request->re_password) {
-            return $this->error('-1',trans('main.pass_confirmation_same'));
+            return $this->error('-2',trans('main.pass_confirmation_same'));
         }
 
         if(empty($request->email)){
-            return $this->error('-1',trans('main.enter_email'));
+            return $this->error('-2',trans('main.enter_email'));
         }
 
         $validator_email = Validator::make(array('email'=>$request->email), [
             'email' => 'required|email',
         ]);        
         if ($validator_email->fails()) {
-            return $this->error(-1,trans('main.email_validation_error'));
+            return $this->error(-2,trans('main.email_validation_error'));
         }
 
         $duplicateEmail = User::where('email',$request->email)->first();
         if($duplicateEmail) {
-            return $this->error(-1,trans('main.user_exists'));
+            return $this->error(-2,trans('main.user_exists'));
         }
                 
         $newUser = [
@@ -103,7 +103,7 @@ class ApiAuthController extends Controller
     public function userLogin(Request $request){
         $email = $request->email;
         $password = $request->password;
-        auth()->factory()->setTTL(60*24);
+        auth()->factory()->setTTL(60*24); 
         if ($token = auth()->attempt(['email' => $email, 'password' => $password, 'status' => 1])) {
             return $this->createNewToken($token);
         }else{
@@ -167,7 +167,7 @@ class ApiAuthController extends Controller
                     ->get();
                 return $this->response($user_list);
             }else{
-                return $this->error(-1,trans('main.not_allowed_admin_permission'));
+                return $this->error(-2,trans('main.not_allowed_admin_permission'));
             }            
         }else{
             return $this->error(-1,trans('main.please_login'));
@@ -195,13 +195,13 @@ class ApiAuthController extends Controller
                 }  
                 $userUpdate = User::find($id);              
                 if(empty($userUpdate)){
-                    return $this->error(-1,trans('main.not_find_user'));
+                    return $this->error(-2,trans('main.not_find_user'));
                 }else{                    
                     $userUpdate->update(['status' => $status]);
                     return $this->response(['message'=>trans('main.updated_success')]);
                 }                
             }else{
-                return $this->error(-1,trans('main.not_allowed_admin_permission'));
+                return $this->error(-2,trans('main.not_allowed_admin_permission'));
             }            
         }else{
             return $this->error(-1,trans('main.please_login'));
@@ -219,10 +219,10 @@ class ApiAuthController extends Controller
         if (auth()->check()) {
 
             if(empty($request->new_password)){
-                return $this->error(-1,trans('main.enter_new_password'));
+                return $this->error(-2,trans('main.enter_new_password'));
             } 
             if($request->new_password != $request->re_password) {
-                return $this->error(-1,trans('main.pass_confirmation_same'));
+                return $this->error(-2,trans('main.pass_confirmation_same'));
             }
 
             $user = auth()->user();
@@ -231,7 +231,7 @@ class ApiAuthController extends Controller
 
             $userUpdate = User::find($id);              
             if(empty($userUpdate)){
-                return $this->error(-1,trans('main.not_find_user'));
+                return $this->error(-2,trans('main.not_find_user'));
             }else{                    
                 $userUpdate->update(['password' => $new_password]);
                 return $this->response(['message'=>trans('main.updated_success')]);

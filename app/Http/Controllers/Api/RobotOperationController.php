@@ -36,23 +36,23 @@ class RobotOperationController extends Controller
             $user = auth()->user();
             $robot_serial = $user->robot_serial;
             if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-1',trans('main.not_robot'));
+                return $this->error('-2',trans('main.not_robot'));
             }
             
             if(empty($request->unit)){
-                return $this->error('-1',trans('main.enter_unit'));
+                return $this->error('-2',trans('main.enter_unit'));
             }
             if(empty($request->floor)){
-                return $this->error('-1',trans('main.enter_floor'));
+                return $this->error('-2',trans('main.enter_floor'));
             }
             if(empty($request->corridor_number)){
-                return $this->error('-1',trans('main.enter_corridor_number'));
+                return $this->error('-2',trans('main.enter_corridor_number'));
             }
             if(empty($request->spots_count)){
-                return $this->error('-1',trans('main.enter_spots_count'));
+                return $this->error('-2',trans('main.enter_spots_count'));
             }
             if(empty($request->duration)){
-                return $this->error('-1',trans('main.enter_duration'));
+                return $this->error('-2',trans('main.enter_duration'));
             }    
             
             $is_completed = 0;
@@ -85,7 +85,7 @@ class RobotOperationController extends Controller
             $user = auth()->user();
             $robot_serial = $user->robot_serial;
             if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-1',trans('main.not_robot'));
+                return $this->error('-2',trans('main.not_robot'));
             }
 
             DB::table('corridor_disinfection_table')
@@ -103,23 +103,23 @@ class RobotOperationController extends Controller
             $user = auth()->user();
             $robot_serial = $user->robot_serial;
             if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-1',trans('main.not_robot'));
+                return $this->error('-2',trans('main.not_robot'));
             }
             
             if(empty($request->unit)){
-                return $this->error('-1',trans('main.enter_unit'));
+                return $this->error('-2',trans('main.enter_unit'));
             }
             if(empty($request->floor)){
-                return $this->error('-1',trans('main.enter_floor'));
+                return $this->error('-2',trans('main.enter_floor'));
             }
             if(empty($request->room_number)){
-                return $this->error('-1',trans('main.enter_room_number'));
+                return $this->error('-2',trans('main.enter_room_number'));
             }
             if(empty($request->spots_count)){
-                return $this->error('-1',trans('main.enter_spots_count'));
+                return $this->error('-2',trans('main.enter_spots_count'));
             }
             if(empty($request->duration)){
-                return $this->error('-1',trans('main.enter_duration'));
+                return $this->error('-2',trans('main.enter_duration'));
             }    
             
             $is_completed = 0;
@@ -152,7 +152,7 @@ class RobotOperationController extends Controller
             $user = auth()->user();
             $robot_serial = $user->robot_serial;
             if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-1',trans('main.not_robot'));
+                return $this->error('-2',trans('main.not_robot'));
             }
 
             DB::table('room_disinfection_table')
@@ -168,16 +168,16 @@ class RobotOperationController extends Controller
         if (auth()->check()) {
             
             if(empty($request->unit)){
-                return $this->error('-1',trans('main.enter_unit'));
+                return $this->error('-2',trans('main.enter_unit'));
             }
             if(empty($request->floor)){
-                return $this->error('-1',trans('main.enter_floor'));
+                return $this->error('-2',trans('main.enter_floor'));
             }
             if(empty($request->room_number)){
-                return $this->error('-1',trans('main.enter_room_number'));
+                return $this->error('-2',trans('main.enter_room_number'));
             }
             if(empty($request->room_size)){
-                return $this->error('-1',trans('main.enter_room_size'));
+                return $this->error('-2',trans('main.enter_room_size'));
             } 
 
             $result = DB::table('hospital_rooms_table')->insert([
