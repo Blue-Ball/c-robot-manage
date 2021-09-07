@@ -50,10 +50,10 @@ class ApiHospitalMapController extends Controller
                 ->selectRaw('hospital_rooms_table.unit')
                 ->groupBy('hospital_rooms_table.unit')
                 ->get();
-            $query = DB::table('hospital_rooms_table')
-                ->selectRaw("hospital_rooms_table.*")
-                ->orderBy('hospital_rooms_table.floor', 'desc');
-            $room_list = $query->get();
+            // $query = DB::table('hospital_rooms_table')
+            //     ->selectRaw("hospital_rooms_table.*")
+            //     ->orderBy('hospital_rooms_table.floor', 'desc');
+            // $room_list = $query->get();
             // $room_map_list = array();
             // foreach($unit_list as $row_u){
             //     $room_map_list[$row_u->unit] = array();
@@ -74,20 +74,30 @@ class ApiHospitalMapController extends Controller
                 $r_unit['id'] = $row_u->unit;
                 $r_unit['floor_data'] = array();
 
-                foreach($room_list as $row_f){
-                    if($row_u->unit == $row_f->unit){
-                        $r_floor = array();
-                        $r_floor['id'] = $row_f->floor;
-                        $r_floor['room_data'] = array();
-                        foreach($room_list as $row_r){
-                            if($row_f->unit == $row_r->unit && $row_f->floor == $row_r->floor){
-                                $r_room = array();
-                                $r_room['id'] = $row_r->room_number;
-                                $r_floor['room_data'][] = $r_room;
-                            }                            
-                        }
-                        $r_unit['floor_data'][] = $r_floor;
+                $floor_list = DB::table('hospital_rooms_table')
+                    ->selectRaw("floor")
+                    ->whereRaw("unit='".$row_u->unit."'")
+                    ->groupBy('floor')
+                    ->orderBy('floor', 'desc')
+                    ->get();
+
+                foreach($floor_list as $row_f){
+                    $r_floor = array();
+                    $r_floor['id'] = $row_f->floor;
+                    $r_floor['room_data'] = array();
+
+                    $rooms_list = DB::table('hospital_rooms_table')
+                        ->selectRaw("room_number")
+                        ->whereRaw("unit='".$row_u->unit."' AND floor='".$row_f->floor."'")
+                        ->orderBy('room_number', 'asc')->get();
+                    
+                    foreach($rooms_list as $row_r){
+                        $r_room = array();
+                        $r_room['id'] = $row_r->room_number;
+                        $r_floor['room_data'][] = $r_room;
                     }
+                        
+                    $r_unit['floor_data'][] = $r_floor;
                 }
                 $map_data[] = $r_unit;
             }

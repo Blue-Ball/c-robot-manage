@@ -97,6 +97,7 @@ class RobotAuthController extends Controller
         
         $serial = $request->serial;
         $password = $request->password;
+        auth()->factory()->setTTL(3600*24);
         if ($token = auth()->attempt(['robot_serial' => $serial, 'password' => $password, 'status' => 1])) {
             return $this->createNewToken($token);
         }else{
@@ -116,7 +117,7 @@ class RobotAuthController extends Controller
         $data = [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            'expires_in' => auth()->factory()->getTTL() * 60 * 24, // one day
             'user' => auth()->user()
         ];
         return $this->response($data);

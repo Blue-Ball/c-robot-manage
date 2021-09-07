@@ -57,7 +57,19 @@ class ApiDashboardController extends Controller
                 $room = $request->room;
             }
 
-            $robot_list = $this->getRobotList();
+            $robot_infos = DB::table('robots_info_table')
+                ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
+            $robot_list = array();
+            $row = array();
+            $row['value'] = '';
+            $row['text'] = 'Please select an robot';
+            $robot_list[] = $row;
+            foreach($robot_infos as $robot){
+                $row = array();
+                $row['value'] = $robot->robot_serial;
+                $row['text'] = $robot->robot_name;
+                $robot_list[] = $row;
+            }
             
             if(!empty($robot_serial) && !empty($start_date) && !empty($end_date)){
                 $robot_info = $this->getRobotInfo($robot_serial);
@@ -86,20 +98,24 @@ class ApiDashboardController extends Controller
     }
 
     public function getRobotList(){
-        $robot_list = DB::table('robots_info_table')
-            ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
-        $result = array();
-        $row = array();
-        $row['value'] = '';
-        $row['text'] = 'Please select an robot';
-        $result[] = $row;
-        foreach($robot_list as $robot){
+        if (auth()->check()) {
+            $robot_list = DB::table('robots_info_table')
+                ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
+            $result = array();
             $row = array();
-            $row['value'] = $robot->robot_serial;
-            $row['text'] = $robot->robot_name;
+            $row['value'] = '';
+            $row['text'] = 'Please select an robot';
             $result[] = $row;
+            foreach($robot_list as $robot){
+                $row = array();
+                $row['value'] = $robot->robot_serial;
+                $row['text'] = $robot->robot_name;
+                $result[] = $row;
+            }
+            return $this->response($result);
+        }else{
+            return $this->error(-1,trans('main.please_login'));
         }
-        return $result;
     }
 
     public function getRobotInfo($robot_serial){
