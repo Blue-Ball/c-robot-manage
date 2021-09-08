@@ -63,8 +63,16 @@ export default {
       })
       .then((response) => {
         console.log(response.data);
-        const mapInfo = response.data.data;
-        this.sets = mapInfo;
+        if(response.data.status == 1){
+          const mapInfo = response.data.data;
+          this.sets = mapInfo;
+        }else{
+          if(response.data.code != null && response.data.code == '-1'){
+              //logout
+            localStorage.removeItem('userData');
+            this.$router.replace('/login');
+          }
+        }        
       })
       .catch((error) => {
         console.log(error);

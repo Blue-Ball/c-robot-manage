@@ -190,7 +190,8 @@
       "completed" : "tamamlanmış görevler"
     },
     "chart":{
-      "Title" : "Güne Göre Gerçekleştirilen Görevler"
+      "Title1" : "Güne Göre Gerçekleştirilen Görevler",
+      "Title2" : "Birime Göre Gerçekleştirilen Görevler"
     }
   },
   "Home": "Ev",

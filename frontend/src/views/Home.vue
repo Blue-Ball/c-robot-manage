@@ -83,7 +83,7 @@
                 <li>
                   <span
                     >{{ $t("home.robotData.completed") }} :
-                    {{ robot_data.completed_tasks }}</span
+                    {{ robot_data.completed_tasks }} %</span
                   >
                 </li>
               </ul>
@@ -102,7 +102,7 @@
     <b-row>
       <b-col md="6">
         <b-card>
-          <b-card-title>{{ $t("home.chart.Title") }}</b-card-title>
+          <b-card-title>{{ $t("home.chart.Title1") }}</b-card-title>
           <vue-apex-charts
             type="bar"
             height="350"
@@ -113,7 +113,7 @@
       </b-col>
       <b-col md="6">
         <b-card>
-          <b-card-title>{{ $t("home.chart.Title") }}</b-card-title>
+          <b-card-title>{{ $t("home.chart.Title2") }}</b-card-title>
           <vue-apex-charts
             type="bar"
             height="350"

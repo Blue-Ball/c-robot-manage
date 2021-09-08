@@ -186,7 +186,8 @@
       "completed" : "completed tasks"
     },
     "chart":{
-      "Title" : "Performed Tasks By Day"
+      "Title1" : "Performed Tasks By Day",
+      "Title2" : "Performed Tasks By Unit"
     }
   },
   "Home": "Home",
