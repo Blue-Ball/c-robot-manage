@@ -90,7 +90,7 @@ class ApiDashboardController extends Controller
             $dashboard_info['performed_task_info'] = $performed_task_info;
             $dashboard_info['performed_task_day_info'] = $performed_task_day_info;
             $dashboard_info['performed_task_unit_info'] = $performed_task_unit_info;  
-            // print_r($dashboard_info);        
+            // print_r($dashboard_info);       
             return $this->response($dashboard_info);
         }else{
             return $this->error(-1,trans('main.please_login'));
@@ -318,11 +318,13 @@ class ApiDashboardController extends Controller
                     $corridor_sql = DB::table('corridor_disinfection_table')
                         ->selectRaw("corridor_disinfection_table.spots_count 
                             ,DATE_FORMAT(corridor_disinfection_table.date, '%Y-%m-%d') AS d_date
+                            ,'2' AS t
                             ,corridor_disinfection_table.robot_serial");
 
                     $sub->from('room_disinfection_table')
                         ->selectRaw("room_disinfection_table.spots_count
                             ,DATE_FORMAT(room_disinfection_table.date, '%Y-%m-%d') AS d_date
+                            ,'1' AS t
                             ,room_disinfection_table.robot_serial")
                         ->union($corridor_sql);
                 }, 'a')
@@ -353,7 +355,8 @@ class ApiDashboardController extends Controller
                 ->groupBy('a.d_date')
                 ->orderBy('a.d_date', 'ASC')
                 ->get();
-        }        
+        }     
+        // print_r($performed_task_info);   
         $result = array();
         $date_range = $this->createDateRangeArray($start_date,$end_date);
         foreach($date_range as $row_date){

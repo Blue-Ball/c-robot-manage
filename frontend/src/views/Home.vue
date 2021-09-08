@@ -178,7 +178,7 @@ export default {
       },
       requestParam: "",
       robot_img: require("@/assets/images/robot/robot-1.png"),
-      robot_data: null,
+      robot_data: null,      
       items: null,
       chartofday: {
         series: [
