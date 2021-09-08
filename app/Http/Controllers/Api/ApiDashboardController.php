@@ -353,9 +353,61 @@ class ApiDashboardController extends Controller
                 ->groupBy('a.d_date')
                 ->orderBy('a.d_date', 'ASC')
                 ->get();
+        }        
+        $result = array();
+        $date_range = $this->createDateRangeArray($start_date,$end_date);
+        foreach($date_range as $row_date){
+            $exist_flg = 0;
+            foreach($performed_task_info as $task){
+                $date1=date_create($row_date);
+                $date2=date_create($task->d_date);
+                $diff=date_diff($date1,$date2);
+                $diff_day = $diff->format("%a");
+                if($diff_day == 0){
+                    $exist_flg = 1;
+                    $row = array();
+                    $row['d_cnt'] = $task->d_cnt;
+                    $c_date = date_create($task->d_date);
+                    $d_date = date_format($c_date, 'd/m/Y');
+                    $row['d_date'] = $d_date;
+                    $result[] = $row;
+                    break;
+                }
+            }
+            if($exist_flg == 0){
+                $row = array();
+                $row['d_cnt'] = 0;
+                $c_date = date_create($row_date);
+                $d_date = date_format($c_date, 'd/m/Y');
+                $row['d_date'] = $d_date;
+                $result[] = $row;
+            }
         }
-        // print_r($performed_task_info);
-        return $performed_task_info;
+        // print_r($result);
+        return $result;
+    }
+
+    public function createDateRangeArray($strDateFrom,$strDateTo)
+    {
+        // takes two dates formatted as YYYY-MM-DD and creates an
+        // inclusive array of the dates between the from and to dates.
+
+        // could test validity of dates here but I'm already doing
+        // that in the main script
+
+        $aryRange = [];
+
+        $iDateFrom = mktime(1, 0, 0, substr($strDateFrom, 5, 2), substr($strDateFrom, 8, 2), substr($strDateFrom, 0, 4));
+        $iDateTo = mktime(1, 0, 0, substr($strDateTo, 5, 2), substr($strDateTo, 8, 2), substr($strDateTo, 0, 4));
+
+        if ($iDateTo >= $iDateFrom) {
+            array_push($aryRange, date('Y-m-d', $iDateFrom)); // first entry
+            while ($iDateFrom<$iDateTo) {
+                $iDateFrom += 86400; // add 24 hours
+                array_push($aryRange, date('Y-m-d', $iDateFrom));
+            }
+        }
+        return $aryRange;
     }
 
     public function getPerformedTasksByUnit($robot_serial,$start_date,$end_date,$unit,$floor,$room){
