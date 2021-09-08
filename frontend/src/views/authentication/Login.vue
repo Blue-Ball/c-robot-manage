@@ -177,12 +177,12 @@ export default {
           axios
             .post("/api/user/login", data)
             .then((response) => {
-              if(response.data.status == 1){
+              if (response.data.status == 1) {
                 console.log("response = ", response);
                 const userData = response.data.data.user;
                 useJwt.setToken(response.data.data.access_token);
                 useJwt.setRefreshToken(response.data.data.access_token);
-                localStorage.setItem("userData", userData);
+                localStorage.setItem("userData", JSON.stringify(userData));
                 // this.$ability.update({
                 //   action: "manage",
                 //   subject: "all",
@@ -203,10 +203,10 @@ export default {
                   });
               } else {
                 // console.log(response.data.error);
-                if(response.data.error != null){
+                if (response.data.error != null) {
                   this.api_errors.pop();
                   this.api_errors.push(response.data.error);
-                } 
+                }
               }
             })
             .catch((error) => {

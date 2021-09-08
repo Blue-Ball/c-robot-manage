@@ -10,7 +10,15 @@
           <b-row v-for="floor in mapDatas.floor_data" v-bind:key="floor.id">
             <div class="w-100"></div>
             <b-col cols="1" class="color-red">{{ floor.id }}</b-col>
-            <b-col v-for="rooms in floor.room_data" :key="rooms.id">{{ rooms.id }}</b-col>
+            <b-col v-for="rooms in floor.room_data" :key="rooms.id">
+              <router-link
+                :to="{
+                  name: 'home',
+                  params: { unit: mapDatas.id, floor: floor.id, room: rooms.id },
+                }"
+                >{{ rooms.id }}</router-link
+              >
+            </b-col>
           </b-row>
         </b-container>
       </b-card>
@@ -62,33 +70,22 @@ export default {
         },
       })
       .then((response) => {
-        console.log(response.data);
-        if(response.data.status == 1){
+        if (response.data.status == 1) {
           const mapInfo = response.data.data;
           this.sets = mapInfo;
-        }else{
-          if(response.data.code != null && response.data.code == '-1'){
-              //logout
-            localStorage.removeItem('userData');
-            this.$router.replace('/login');
+        } else {
+          if (response.data.code != null && response.data.code == "-1") {
+            //logout
+            localStorage.removeItem("userData");
+            this.$router.replace("/login");
           }
-        }        
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   },
-  methods: {
-    // reversedFloorData() {
-    //   let rev = this.sets.map((s) => {
-    //     return s.floor_data.slice().reverse();
-    //   });
-    //   return rev.flat();
-    // },
-    getRoomNum(numbers) {
-      console.log("numbers", numbers);
-    },
-  },
+  methods: {},
 };
 </script>
 

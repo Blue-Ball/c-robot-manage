@@ -19,7 +19,6 @@
                   v-model="setRobot"
                   label="robot"
                   v-on:change="selected_robot()"
-                  v-bind:placeholder="$t('setRobot')"
                   :options="option"
                 ></b-form-select>
               </b-form-group>
@@ -82,7 +81,7 @@
                 <li>
                   <span
                     >{{ $t("home.robotData.completed") }} :
-                    {{ robot_data.completed_tasks }}</span
+                    {{ robot_data.completed_tasks }} %</span
                   >
                 </li>
               </ul>
@@ -168,14 +167,14 @@ export default {
       option: null,
       rangeDate: null,
       isSelectDate: false,
+      isRobot: true,
       dateConfig: {
         mode: "range",
         wrap: true, // set wrap to true only when using 'input-group'
-        altFormat: "Y/m/d",
+        altFormat: "d/m/Y",
         altInput: true,
         dateFormat: "Y/m/d",
         defaultDate: ["2016-10-20", "2016-11-04"],
-        // locale: I18n.locale,
       },
       requestParam: "",
       robot_img: require("@/assets/images/robot/robot-1.png"),
@@ -342,16 +341,34 @@ export default {
       .then((response) => {
         this.option = response.data.data;
         this.setRobot = response.data.data[1].value;
-        let params = {
-          robot_serial: this.setRobot,
-          start_date: start_date,
-          end_date: end_date,
-        };
-        this.getDashboardData(params);
+        if (this.isRobot) {
+          this.requestParam = {
+            robot_serial: this.setRobot,
+            start_date: start_date,
+            end_date: end_date,
+          };
+        } else {
+          this.requestParam = {
+            robot_serial: this.setRobot,
+            start_date: start_date,
+            end_date: end_date,
+            unit: this.$route.params.unit,
+            floor: this.$route.params.floor,
+            room: this.$route.params.room,
+          };
+        }
+        this.getDashboardData(this.requestParam);
       })
       .catch((error) => {
         console.log(error);
       });
+
+    console.log("this.isRobot = ", this.isRobot);
+  },
+  created() {
+    if (this.$route.params.unit) {
+      this.isRobot = false;
+    }
   },
   methods: {
     selected_robot() {
@@ -375,7 +392,7 @@ export default {
       this.isSelectDate = true;
       let start = this.rangeDate.split(" to ").slice(0)[0];
       let end = this.rangeDate.split(" to ").slice(0)[1];
-      if (this.setRobot!=null && end) {
+      if (this.setRobot != null && end) {
         const params = {
           robot_serial: this.setRobot,
           start_date: start,
@@ -392,7 +409,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log("=========", response.data);
           if (response.data.status == 1) {
             const robotList = response.data.data.robot_list;
             const robotInfo = response.data.data.total_info;
@@ -415,15 +431,17 @@ export default {
             //   },
             // ];
             // this.chartofday.chartOptions.xaxis.categories = daysOflabel;
-            this.chartofday = {  
-              chartOptions: { 
-                xaxis: {  
-                  categories: daysOflabel  
-                } 
+            this.chartofday = {
+              chartOptions: {
+                xaxis: {
+                  categories: daysOflabel,
+                },
               },
-              series:[{
-                data:daysOfvalue
-              }],
+              series: [
+                {
+                  data: daysOfvalue,
+                },
+              ],
             };
 
             const unitOfvalue = task_unit_info.map(function (x) {
@@ -438,15 +456,17 @@ export default {
             //   },
             // ];
             // this.chartofunit.chartOptions.xaxis.categories = unitOflabel;
-            this.chartofunit = {  
-              chartOptions: { 
-                xaxis: {  
-                  categories: unitOflabel  
-                } 
+            this.chartofunit = {
+              chartOptions: {
+                xaxis: {
+                  categories: unitOflabel,
+                },
               },
-              series:[{
-                data:unitOfvalue
-              }],
+              series: [
+                {
+                  data: unitOfvalue,
+                },
+              ],
             };
           } else {
             if (response.data.code != null && response.data.code == "-1") {
