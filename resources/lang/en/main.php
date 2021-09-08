@@ -7,7 +7,7 @@ return [
     'password_validation_error' => 'Password length should be 4 characters over',
     'email_validation_error' => 'Not email form',
     'thanks_reg' => 'Thanks for registration!',
-    'incorrect_login' => 'Incorrect email or password',
+    'incorrect_login' => 'Incorrect email or password or approve',
     'signed_out' => 'User successfully signed out',
     'please_login' => 'Please Login',
     'hours' => 'Hours',
@@ -30,6 +30,6 @@ return [
     'enter_room_size' => 'Please enter room size',
     'not_robot' => 'You are not robot',
     'not_user' => 'You are not user',
-    'incorrect_login_robot' => 'Incorrect serial or password',
+    'incorrect_login_robot' => 'Incorrect serial or password or approve',
     'select_robot' => 'Please select an robot',
 ];
