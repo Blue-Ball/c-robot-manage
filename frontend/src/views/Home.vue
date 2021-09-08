@@ -31,9 +31,8 @@
               <feather-icon icon="CalendarIcon" size="16" />
               <flat-pickr
                 v-model="rangeDate"
-                :config="{
-                  mode: 'range',
-                }"
+                :config="dateConfig"
+                @input="onDateChange"
                 class="form-control flat-picker bg-transparent border-0 shadow-none"
                 placeholder="YYYY/MM/DD"
               />
@@ -83,7 +82,7 @@
                 <li>
                   <span
                     >{{ $t("home.robotData.completed") }} :
-                    {{ robot_data.completed_tasks }} %</span
+                    {{ robot_data.completed_tasks }}</span
                   >
                 </li>
               </ul>
@@ -167,6 +166,17 @@ export default {
       setRobot: null,
       option: null,
       rangeDate: null,
+      isSelectDate: false,
+      dateConfig: {
+        mode: "range",
+        wrap: true, // set wrap to true only when using 'input-group'
+        altFormat: "Y/m/d",
+        altInput: true,
+        dateFormat: "Y/m/d",
+        defaultDate: ["2016-10-20", "2016-11-04"],
+        // locale: I18n.locale,
+      },
+      requestParam: "",
       robot_img: require("@/assets/images/robot/robot-1.png"),
       robot_data: null,
       items: null,
@@ -317,47 +327,62 @@ export default {
   },
 
   mounted() {
-    var end_date = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
-    var start_date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    const end_date = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
+    const start_date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       .toISOString()
       .slice(0, 10);
-    // ["2021-05-01", "2021-05-10"]
     this.rangeDate = [start_date, end_date];
-    // axios
-    //   .post("/api/user/getRobotList", params, {
-    //     headers: {
-    //       Authorization: "Bearer " + useJwt.getToken(),
-    //     },
-    //   })
-    //   .then((response) => {
-    //     this.option = response.data.data;
-    //     this.setRobot = response.data.data[1].value;
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-
-    const params = {
-      robot_serial: 1,
-      start_date: start_date,
-      end_date: end_date,
-    };
-    this.getDashboardData(params);
+    axios
+      .post("/api/user/getRobotList", "", {
+        headers: {
+          Authorization: "Bearer " + useJwt.getToken(),
+        },
+      })
+      .then((response) => {
+        this.option = response.data.data;
+        this.setRobot = response.data.data[1].value;
+        let params = {
+          robot_serial: this.setRobot,
+          start_date: start_date,
+          end_date: end_date,
+        };
+        this.getDashboardData(params);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
     selected_robot() {
-      const params = {
-        robot_serial: this.setRobot,
-        start_date: this.rangeDate[0],
-        end_date: this.rangeDate[1],
-      };
-      this.getDashboardData(params);
+      if (!this.isSelectDate) {
+        this.requestParam = {
+          robot_serial: this.setRobot,
+          start_date: this.rangeDate[0],
+          end_date: this.rangeDate[1],
+        };
+      } else {
+        this.requestParam = {
+          robot_serial: this.setRobot,
+          start_date: this.rangeDate.split(" to ").slice(0)[0],
+          end_date: this.rangeDate.split(" to ").slice(0)[1],
+        };
+      }
+      this.getDashboardData(this.requestParam);
     },
 
-    onChangeDate: function (selectedDates, dateStr, instance) {
-      //...
+    onDateChange: function () {
+      this.isSelectDate = true;
+      let start = this.rangeDate.split(" to ").slice(0)[0];
+      let end = this.rangeDate.split(" to ").slice(0)[1];
+      if (end) {
+        const params = {
+          robot_serial: this.setRobot,
+          start_date: start,
+          end_date: end,
+        };
+        this.getDashboardData(params);
+      }
     },
-
     getDashboardData(params) {
       axios
         .post("/api/user/dashboard", params, {
@@ -367,7 +392,7 @@ export default {
         })
         .then((response) => {
           console.log("=========", response.data);
-          if(response.data.status == 1){
+          if (response.data.status == 1) {
             const robotList = response.data.data.robot_list;
             const robotInfo = response.data.data.total_info;
             const task_info = response.data.data.performed_task_info;
@@ -403,14 +428,13 @@ export default {
             ];
             this.chartofunit.chartOptions.xaxis.categories = unitOflabel;
             // console.log(this.chartofunit);
-          }else{
-            if(response.data.code != null && response.data.code == '-1'){
+          } else {
+            if (response.data.code != null && response.data.code == "-1") {
               //logout
-              localStorage.removeItem('userData');
-              this.$router.replace('/login');
+              localStorage.removeItem("userData");
+              this.$router.replace("/login");
             }
           }
-          
         })
         .catch((error) => {
           console.log(error);
