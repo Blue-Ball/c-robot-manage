@@ -107,6 +107,7 @@
             height="350"
             :options="chartofday.chartOptions"
             :series="chartofday.series"
+            ref="chart"
           ></vue-apex-charts>
         </b-card>
       </b-col>
@@ -178,7 +179,7 @@ export default {
       },
       requestParam: "",
       robot_img: require("@/assets/images/robot/robot-1.png"),
-      robot_data: null,      
+      robot_data: [],
       items: null,
       chartofday: {
         series: [
@@ -374,7 +375,7 @@ export default {
       this.isSelectDate = true;
       let start = this.rangeDate.split(" to ").slice(0)[0];
       let end = this.rangeDate.split(" to ").slice(0)[1];
-      if (end) {
+      if (this.setRobot!=null && end) {
         const params = {
           robot_serial: this.setRobot,
           start_date: start,
@@ -408,12 +409,22 @@ export default {
             const daysOflabel = task_day_info.map(function (x) {
               return x.d_date;
             });
-            this.chartofday.series = [
-              {
-                data: daysOfvalue,
+            // this.chartofday.series = [
+            //   {
+            //     data: daysOfvalue,
+            //   },
+            // ];
+            // this.chartofday.chartOptions.xaxis.categories = daysOflabel;
+            this.chartofday = {  
+              chartOptions: { 
+                xaxis: {  
+                  categories: daysOflabel  
+                } 
               },
-            ];
-            this.chartofday.chartOptions.xaxis.categories = daysOflabel;
+              series:[{
+                data:daysOfvalue
+              }],
+            };
 
             const unitOfvalue = task_unit_info.map(function (x) {
               return x.u_cnt;
@@ -421,13 +432,22 @@ export default {
             const unitOflabel = task_unit_info.map(function (x) {
               return x.unit;
             });
-            this.chartofunit.series = [
-              {
-                data: unitOfvalue,
+            // this.chartofunit.series = [
+            //   {
+            //     data: unitOfvalue,
+            //   },
+            // ];
+            // this.chartofunit.chartOptions.xaxis.categories = unitOflabel;
+            this.chartofunit = {  
+              chartOptions: { 
+                xaxis: {  
+                  categories: unitOflabel  
+                } 
               },
-            ];
-            this.chartofunit.chartOptions.xaxis.categories = unitOflabel;
-            // console.log(this.chartofunit);
+              series:[{
+                data:unitOfvalue
+              }],
+            };
           } else {
             if (response.data.code != null && response.data.code == "-1") {
               //logout
