@@ -265,7 +265,7 @@ class ApiDashboardController extends Controller
                         ->selectRaw("room_disinfection_table.unit,room_disinfection_table.floor
                             ,room_disinfection_table.duration,room_disinfection_table.date
                             ,room_disinfection_table.robot_serial,room_disinfection_table.is_completed")
-                        ->union($corridor_sql);
+                        ->unionAll($corridor_sql);
                 }, 'a')
                 ->selectRaw("a.*")
                 ->where("a.robot_serial", "=", $robot_serial)
@@ -318,15 +318,13 @@ class ApiDashboardController extends Controller
                     $corridor_sql = DB::table('corridor_disinfection_table')
                         ->selectRaw("corridor_disinfection_table.spots_count 
                             ,DATE_FORMAT(corridor_disinfection_table.date, '%Y-%m-%d') AS d_date
-                            ,'2' AS t
                             ,corridor_disinfection_table.robot_serial");
 
                     $sub->from('room_disinfection_table')
                         ->selectRaw("room_disinfection_table.spots_count
                             ,DATE_FORMAT(room_disinfection_table.date, '%Y-%m-%d') AS d_date
-                            ,'1' AS t
                             ,room_disinfection_table.robot_serial")
-                        ->union($corridor_sql);
+                        ->unionAll($corridor_sql);
                 }, 'a')
                 ->selectRaw("SUM(a.spots_count) AS d_cnt,a.d_date")
                 ->where("a.robot_serial", "=", $robot_serial)
@@ -431,7 +429,7 @@ class ApiDashboardController extends Controller
                 }
                 $query .= " FROM room_disinfection_table ";
                 if(empty($room)){
-                    $query .= " UNION ";
+                    $query .= " UNION ALL";
                     $query .= " SELECT corridor_disinfection_table.spots_count ";
                     $query .= " ,corridor_disinfection_table.date ";
                     $query .= " ,corridor_disinfection_table.robot_serial ";
