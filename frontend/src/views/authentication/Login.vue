@@ -12,6 +12,10 @@
         <!-- form -->
         <validation-observer ref="loginForm" #default="{ invalid }">
           <b-form class="auth-login-form mt-2" @submit.prevent="login">
+            <!-- api response error -->
+            <p v-if="api_errors.length">
+              <small class="text-danger">{{ api_errors[0] }}</small>
+            </p>
             <!-- email -->
             <b-form-group label-for="email" label="Email">
               <validation-provider
@@ -151,6 +155,7 @@ export default {
       // validation rules
       required,
       email,
+      api_errors: [],
     };
   },
   computed: {
@@ -197,13 +202,17 @@ export default {
                     });
                   });
               } else {
-                console.log(response.data.error);
+                // console.log(response.data.error);
+                if(response.data.error != null){
+                  this.api_errors.pop();
+                  this.api_errors.push(response.data.error);
+                } 
               }
-              
             })
             .catch((error) => {
-              console.log(error);
-              // this.$refs.loginForm.setErrors(error.response.data.error);
+              // console.log(error);
+              this.api_errors.pop();
+              this.api_errors.push(error); 
             });
         }
       });
