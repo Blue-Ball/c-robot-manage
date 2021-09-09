@@ -12,6 +12,10 @@
         <!-- form -->
         <validation-observer ref="loginForm" #default="{ invalid }">
           <b-form class="auth-login-form mt-2" @submit.prevent="login">
+            <!-- api response error -->
+            <p v-if="api_errors.length">
+              <small class="text-danger">{{ api_errors[0] }}</small>
+            </p>
             <!-- email -->
             <b-form-group label-for="email" label="Email">
               <validation-provider
@@ -151,6 +155,7 @@ export default {
       // validation rules
       required,
       email,
+      api_errors: [],
     };
   },
   computed: {
@@ -172,31 +177,42 @@ export default {
           axios
             .post("/api/user/login", data)
             .then((response) => {
-              console.log("response = ", response);
-              const { userData } = response.data.user;
-              useJwt.setToken(response.data.access_token);
-              useJwt.setRefreshToken(response.data.access_token);
-              this.$ability.update({
-                action: "manage",
-                subject: "all",
-              });
-              this.$router
-                .replace(getHomeRouteForLoggedInUser(userData.is_admin))
-                .then(() => {
-                  this.$toast({
-                    component: ToastificationContent,
-                    position: "top-right",
-                    props: {
-                      title: `Welcome ${userData.name}`,
-                      icon: "CoffeeIcon",
-                      variant: "success",
-                      text: `You have successfully logged !`,
-                    },
+              if (response.data.status == 1) {
+                console.log("response = ", response);
+                const userData = response.data.data.user;
+                useJwt.setToken(response.data.data.access_token);
+                useJwt.setRefreshToken(response.data.data.access_token);
+                localStorage.setItem("userData", JSON.stringify(userData));
+                // this.$ability.update({
+                //   action: "manage",
+                //   subject: "all",
+                // });
+                this.$router
+                  .replace(getHomeRouteForLoggedInUser(userData.is_admin))
+                  .then(() => {
+                    this.$toast({
+                      component: ToastificationContent,
+                      position: "top-right",
+                      props: {
+                        title: `"Welcome" ${userData.name}`,
+                        icon: "CoffeeIcon",
+                        variant: "success",
+                        text: `You have successfully logged !`,
+                      },
+                    });
                   });
-                });
+              } else {
+                // console.log(response.data.error);
+                if (response.data.error != null) {
+                  this.api_errors.pop();
+                  this.api_errors.push(response.data.error);
+                }
+              }
             })
             .catch((error) => {
-              this.$refs.loginForm.setErrors(error.response.data.error);
+              // console.log(error);
+              this.api_errors.pop();
+              this.api_errors.push(error); 
             });
         }
       });

@@ -6,5 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class RobotInfo extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'robot_serial',
+        'robot_name',
+        'robot_password',
+        'robot_number',
+    ];
+
     protected $table = 'robots_info_table';
 }

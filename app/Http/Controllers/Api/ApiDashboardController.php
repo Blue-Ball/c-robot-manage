@@ -36,6 +36,10 @@ class ApiDashboardController extends Controller
      */
     public function dashboard(Request $request){
         if (auth()->check()) {
+            $user = auth()->user();
+            if(!empty($user->robot_serial)){
+                return $this->error(-2,trans('main.not_user'));
+            }
             $dashboard_info = array();
             $robot_serial = $request->robot_serial;
             $start_date = $request->start_date;
@@ -52,6 +56,20 @@ class ApiDashboardController extends Controller
             if(!empty($request->room)){
                 $room = $request->room;
             }
+
+            $robot_infos = DB::table('robots_info_table')
+                ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
+            $robot_list = array();
+            $row = array();
+            $row['value'] = '';
+            $row['text'] = trans('main.select_robot');
+            $robot_list[] = $row;
+            foreach($robot_infos as $robot){
+                $row = array();
+                $row['value'] = $robot->robot_serial;
+                $row['text'] = $robot->robot_name;
+                $robot_list[] = $row;
+            }
             
             if(!empty($robot_serial) && !empty($start_date) && !empty($end_date)){
                 $robot_info = $this->getRobotInfo($robot_serial);
@@ -66,16 +84,38 @@ class ApiDashboardController extends Controller
                 $performed_task_day_info = array();
                 $performed_task_unit_info = array();
             }  
+            $dashboard_info['robot_list'] = $robot_list;
             $dashboard_info['robot_info'] = $robot_info;
             $dashboard_info['total_info'] = $total_info;
             $dashboard_info['performed_task_info'] = $performed_task_info;
             $dashboard_info['performed_task_day_info'] = $performed_task_day_info;
             $dashboard_info['performed_task_unit_info'] = $performed_task_unit_info;  
-            // print_r($dashboard_info);        
+            // print_r($dashboard_info);       
             return $this->response($dashboard_info);
         }else{
             return $this->error(-1,trans('main.please_login'));
         }        	
+    }
+
+    public function getRobotList(){
+        if (auth()->check()) {
+            $robot_list = DB::table('robots_info_table')
+                ->selectRaw("robots_info_table.robot_serial,robots_info_table.robot_name")->get();
+            $result = array();
+            $row = array();
+            $row['value'] = '';
+            $row['text'] = trans('main.select_robot');
+            $result[] = $row;
+            foreach($robot_list as $robot){
+                $row = array();
+                $row['value'] = $robot->robot_serial;
+                $row['text'] = $robot->robot_name;
+                $result[] = $row;
+            }
+            return $this->response($result);
+        }else{
+            return $this->error(-1,trans('main.please_login'));
+        }
     }
 
     public function getRobotInfo($robot_serial){
@@ -162,6 +202,7 @@ class ApiDashboardController extends Controller
         }
 
         $total_useage = $room_total_useage + $corridor_total_useage;
+        $total_useage = floor($total_useage/1000); //milisecond -> second
         $total_hour = floor($total_useage/3600);
         $total_minute = floor(($total_useage%3600)/60);
         $total_sec = $total_useage % 60;
@@ -224,7 +265,7 @@ class ApiDashboardController extends Controller
                         ->selectRaw("room_disinfection_table.unit,room_disinfection_table.floor
                             ,room_disinfection_table.duration,room_disinfection_table.date
                             ,room_disinfection_table.robot_serial,room_disinfection_table.is_completed")
-                        ->union($corridor_sql);
+                        ->unionAll($corridor_sql);
                 }, 'a')
                 ->selectRaw("a.*")
                 ->where("a.robot_serial", "=", $robot_serial)
@@ -254,8 +295,9 @@ class ApiDashboardController extends Controller
             $row = array();
             $row['unit'] = $performed_task->unit;
             $row['floor'] = $performed_task->floor;
-            $minute = floor($performed_task->duration/60);
-            $second = $performed_task->duration % 60;
+            $task_duration = floor($performed_task->duration/1000);
+            $minute = floor($task_duration/60);
+            $second = $task_duration % 60;
             if(strlen($second) == 1){
                 $second = "0".$second;
             }
@@ -282,7 +324,7 @@ class ApiDashboardController extends Controller
                         ->selectRaw("room_disinfection_table.spots_count
                             ,DATE_FORMAT(room_disinfection_table.date, '%Y-%m-%d') AS d_date
                             ,room_disinfection_table.robot_serial")
-                        ->union($corridor_sql);
+                        ->unionAll($corridor_sql);
                 }, 'a')
                 ->selectRaw("SUM(a.spots_count) AS d_cnt,a.d_date")
                 ->where("a.robot_serial", "=", $robot_serial)
@@ -311,9 +353,62 @@ class ApiDashboardController extends Controller
                 ->groupBy('a.d_date')
                 ->orderBy('a.d_date', 'ASC')
                 ->get();
+        }     
+        // print_r($performed_task_info);   
+        $result = array();
+        $date_range = $this->createDateRangeArray($start_date,$end_date);
+        foreach($date_range as $row_date){
+            $exist_flg = 0;
+            foreach($performed_task_info as $task){
+                $date1=date_create($row_date);
+                $date2=date_create($task->d_date);
+                $diff=date_diff($date1,$date2);
+                $diff_day = $diff->format("%a");
+                if($diff_day == 0){
+                    $exist_flg = 1;
+                    $row = array();
+                    $row['d_cnt'] = $task->d_cnt;
+                    $c_date = date_create($task->d_date);
+                    $d_date = date_format($c_date, 'd/m/Y');
+                    $row['d_date'] = $d_date;
+                    $result[] = $row;
+                    break;
+                }
+            }
+            if($exist_flg == 0){
+                $row = array();
+                $row['d_cnt'] = 0;
+                $c_date = date_create($row_date);
+                $d_date = date_format($c_date, 'd/m/Y');
+                $row['d_date'] = $d_date;
+                $result[] = $row;
+            }
         }
-        // print_r($performed_task_info);
-        return $performed_task_info;
+        // print_r($result);
+        return $result;
+    }
+
+    public function createDateRangeArray($strDateFrom,$strDateTo)
+    {
+        // takes two dates formatted as YYYY-MM-DD and creates an
+        // inclusive array of the dates between the from and to dates.
+
+        // could test validity of dates here but I'm already doing
+        // that in the main script
+
+        $aryRange = [];
+
+        $iDateFrom = mktime(1, 0, 0, substr($strDateFrom, 5, 2), substr($strDateFrom, 8, 2), substr($strDateFrom, 0, 4));
+        $iDateTo = mktime(1, 0, 0, substr($strDateTo, 5, 2), substr($strDateTo, 8, 2), substr($strDateTo, 0, 4));
+
+        if ($iDateTo >= $iDateFrom) {
+            array_push($aryRange, date('Y-m-d', $iDateFrom)); // first entry
+            while ($iDateFrom<$iDateTo) {
+                $iDateFrom += 86400; // add 24 hours
+                array_push($aryRange, date('Y-m-d', $iDateFrom));
+            }
+        }
+        return $aryRange;
     }
 
     public function getPerformedTasksByUnit($robot_serial,$start_date,$end_date,$unit,$floor,$room){
@@ -334,7 +429,7 @@ class ApiDashboardController extends Controller
                 }
                 $query .= " FROM room_disinfection_table ";
                 if(empty($room)){
-                    $query .= " UNION ";
+                    $query .= " UNION ALL";
                     $query .= " SELECT corridor_disinfection_table.spots_count ";
                     $query .= " ,corridor_disinfection_table.date ";
                     $query .= " ,corridor_disinfection_table.robot_serial ";

@@ -183,10 +183,11 @@
       "AverageTime" : "Average usage duration",
       "RoomsCount" : "Rooms disinfected count",
       "CorridorsCount" : "Corridors disinfected count",
-      "completed" : "completed tasks"
+      "completed" : "Completed tasks"
     },
     "chart":{
-      "Title" : "Performed Tasks By Day"
+      "Title1" : "Performed Tasks By Day",
+      "Title2" : "Performed Tasks By Unit"
     }
   },
   "Home": "Home",

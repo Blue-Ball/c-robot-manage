@@ -15,6 +15,10 @@
             class="auth-register-form mt-2"
             @submit.prevent="register"
           >
+            <!-- api response error -->
+            <p v-if="api_errors.length">
+              <small class="text-danger">{{ api_errors[0] }}</small>
+            </p>
             <!-- username -->
             <b-form-group label="Username" label-for="username">
               <validation-provider #default="{ errors }" name="Username" rules="required">
@@ -189,6 +193,7 @@ export default {
       // validation rules
       required,
       email,
+      api_errors: [],
     };
   },
   computed: {
@@ -211,19 +216,28 @@ export default {
           axios
             .post("/api/user/register", formData)
             .then((response) => {
-              this.$router.replace(getHomeRouteForRegister()).then(() => {
-                this.$toast({
-                  component: ToastificationContent,
-                  props: {
-                    title: "Form Submitted",
-                    icon: "EditIcon",
-                    variant: "success",
-                  },
+              if(response.data.status == 1){
+                this.$router.replace(getHomeRouteForRegister()).then(() => {
+                  this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                      title: "Form Submitted",
+                      icon: "EditIcon",
+                      variant: "success",
+                    },
+                  });
                 });
-              });
+              }else{
+                if(response.data.error != null){
+                  this.api_errors.pop();
+                  this.api_errors.push(response.data.error);
+                }                
+              }
             })
             .catch((error) => {
-              this.$refs.loginForm.setErrors(error.response.data.error);
+              console.log(error);
+              this.api_errors.pop();
+              this.api_errors.push(error);
             });
         }
       });
