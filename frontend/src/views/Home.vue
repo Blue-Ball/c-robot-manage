@@ -5,6 +5,10 @@
   padding: 8px 0px;
   font-size: larger;
 }
+[dir] .table th,
+[dir] .table td {
+  padding: 0.72rem 0.1rem;
+}
 </style>
 <template>
   <div>
@@ -31,7 +35,7 @@
               <flat-pickr
                 v-model="rangeDate"
                 :config="dateConfig"
-                @input="onDateChange"
+                @on-close="onDateChange"
                 class="form-control flat-picker bg-transparent border-0 shadow-none"
                 placeholder="YYYY/MM/DD"
               />
@@ -174,7 +178,11 @@ export default {
         altFormat: "d/m/Y",
         altInput: true,
         dateFormat: "Y/m/d",
-        defaultDate: ["2016-10-20", "2016-11-04"],
+        defaultDate: [
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          new Date(Date.now()),
+        ],
+        conjunction: "~",
       },
       requestParam: "",
       robot_img: require("@/assets/images/robot/robot-1.png"),
@@ -192,6 +200,7 @@ export default {
             height: 350,
             type: "bar",
           },
+          colors: ["#7367f0", "#ff9f43", "#9ca0a4", "#ff9f43", "#00cfe8"],
           plotOptions: {
             bar: {
               columnWidth: "45%",
@@ -209,7 +218,7 @@ export default {
             offsetY: -20,
             style: {
               fontSize: "12px",
-              colors: ["#304758"],
+              // colors: ["#304758"],
             },
           },
 
@@ -222,20 +231,11 @@ export default {
             axisTicks: {
               show: false,
             },
-            crosshairs: {
-              fill: {
-                type: "gradient",
-                gradient: {
-                  colorFrom: "#D8E3F0",
-                  colorTo: "#BED1E6",
-                  stops: [0, 100],
-                  opacityFrom: 0.4,
-                  opacityTo: 0.5,
-                },
+            labels: {
+              style: {
+                colors: "#9ca0a4",
+                fontSize: "12px",
               },
-            },
-            tooltip: {
-              enabled: true,
             },
           },
           yaxis: {
@@ -247,6 +247,10 @@ export default {
             },
             labels: {
               show: true,
+              style: {
+                colors: "#9ca0a4",
+                fontSize: "12px",
+              },
               formatter: function (val) {
                 return val; // + "%";
               },
@@ -292,7 +296,7 @@ export default {
             offsetY: -20,
             style: {
               fontSize: "12px",
-              colors: ["#304758"],
+              // colors: ["#304758"],
             },
           },
           legend: {
@@ -316,6 +320,10 @@ export default {
             },
             labels: {
               show: true,
+              style: {
+                colors: "#9ca0a4",
+                fontSize: "12px",
+              },
               formatter: function (val) {
                 return val; // + "%";
               },
@@ -388,18 +396,14 @@ export default {
       this.getDashboardData(this.requestParam);
     },
 
-    onDateChange: function () {
+    onDateChange: function (selectedDates, dateStr, instance) {
       this.isSelectDate = true;
-      let start = this.rangeDate.split(" to ").slice(0)[0];
-      let end = this.rangeDate.split(" to ").slice(0)[1];
-      if (this.setRobot != null && end) {
-        const params = {
-          robot_serial: this.setRobot,
-          start_date: start,
-          end_date: end,
-        };
-        this.getDashboardData(params);
-      }
+      this.requestParam = {
+        robot_serial: this.setRobot,
+        start_date: selectedDates[0],
+        end_date: selectedDates[1],
+      };
+      this.getDashboardData(this.requestParam);
     },
     getDashboardData(params) {
       axios
