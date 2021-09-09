@@ -62,3 +62,11 @@ mix
 if (mix.inProduction()) {
   mix.version()
 }
+
+/*
+mix.webpackConfig({
+  output: {
+    chunkFilename: 'js/chunks/[name].[chunkhash].js',
+  },
+})
+*/
