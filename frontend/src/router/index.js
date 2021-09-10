@@ -41,6 +41,20 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/export',
+      name: 'export',
+      component: () => import('@/views/Export.vue'),
+      // meta: {
+      //   pageTitle: 'Hospital Map',
+      //   breadcrumb: [
+      //     {
+      //       text: 'Hospital Map',
+      //       active: true,
+      //     },
+      //   ],
+      // },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/authentication/Login.vue'),

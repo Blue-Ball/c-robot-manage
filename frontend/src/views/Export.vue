@@ -1,6 +1,5 @@
 <style lang="scss">
 @import "@core/scss/vue/libs/vue-select.scss";
-@import "@core/scss/vue/libs/vue-flatpicker.scss";
 .robot-data-list li {
   padding: 8px 0px;
   font-size: larger;
@@ -11,40 +10,20 @@
 }
 </style>
 <template>
-  <div>
+  <div id="dashboard">
     <b-row>
       <b-col md="7">
         <b-card class="text-center">
           <b-card-header>
-            <!-- title and subtitle -->
             <div>
-              <b-form-group>
-                <b-form-select
-                  v-model="setRobot"
-                  label="robot"
-                  v-on:change="selected_robot()"
-                  :options="option"
-                ></b-form-select>
-              </b-form-group>
+              <h6 class="font-weight-bolder">Robot 1</h6>
             </div>
-            <!--/ title and subtitle -->
-
-            <!-- datepicker -->
             <div class="d-flex align-items-center">
-              <feather-icon icon="CalendarIcon" size="16" />
-              <flat-pickr
-                v-model="rangeDate"
-                :config="dateConfig"
-                @on-close="onDateChange"
-                class="form-control flat-picker bg-transparent border-0 shadow-none"
-                placeholder="YYYY/MM/DD"
-              />
+              <b-card-text> 2021.9.1~2021.9.8 </b-card-text>
             </div>
             <!-- datepicker -->
           </b-card-header>
-
           <b-row class="my-2">
-            <!-- Left: Product Image Container -->
             <b-col
               cols="12"
               md="4"
@@ -54,39 +33,25 @@
                 <b-img :src="robot_img" class="product-img" fluid />
               </div>
             </b-col>
-
-            <!-- Right: Product Details -->
             <b-col cols="12" md="8">
               <ul class="robot-data-list list-unstyled text-left">
                 <li>
-                  <b-row>
-                    <b-col cols="12" md="6">
-                      <span>{{ $t("home.robotData.TotalTime") }}</span>
-                    </b-col>
-                    <b-col cols="12" md="6">
-                      <span>:&nbsp;{{ robot_data.total_useage_time }}</span>
-                    </b-col>
-                  </b-row>
+                  <span
+                    >{{ $t("home.robotData.TotalTime") }} :
+                    {{ robot_data.total_useage_time }}</span
+                  >
                 </li>
                 <li>
-                  <b-row>
-                    <b-col cols="12" md="6">
-                      <span>{{ $t("home.robotData.AverageTime") }}</span>
-                    </b-col>
-                    <b-col cols="12" md="6">
-                      <span>:&nbsp;{{ robot_data.average_useage_duration }}</span>
-                    </b-col>
-                  </b-row>
+                  <span
+                    >{{ $t("home.robotData.AverageTime") }} :
+                    {{ robot_data.average_useage_duration }}</span
+                  >
                 </li>
                 <li>
-                  <b-row>
-                    <b-col cols="12" md="6">
-                      <span>{{ $t("home.robotData.RoomsCount") }}</span>
-                    </b-col>
-                    <b-col cols="12" md="6">
-                      <span>:&nbsp;{{ robot_data.rooms_disinfected_count }}</span>
-                    </b-col>
-                  </b-row>
+                  <span
+                    >{{ $t("home.robotData.RoomsCount") }} :
+                    {{ robot_data.rooms_disinfected_count }}</span
+                  >
                 </li>
                 <li>
                   <span
@@ -126,7 +91,7 @@
           ></vue-apex-charts>
         </b-card>
       </b-col>
-      <b-col md="6">        
+      <b-col md="6">
         <b-card>
           <b-card-title>{{ $t("home.chart.Title2") }}</b-card-title>
           <vue-apex-charts
@@ -136,17 +101,8 @@
             :series="chartofunit.series"
           ></vue-apex-charts>
         </b-card>
-        
       </b-col>
     </b-row>
-    <router-link
-      :to="{
-        name: 'export',
-        params: { robot: setRobot, startDate: startDate, endDate: endDate },
-      }"
-    >
-      <b-button variant="primary" label="Export"> Export </b-button></router-link
-    >
   </div>
 </template>
 
@@ -161,15 +117,14 @@ import {
   BFormGroup,
   BImg,
   BTable,
-  BFormSelect,
-  BButton,
 } from "bootstrap-vue";
-import flatPickr from "vue-flatpickr-component";
 import AppEchartBar from "@core/components/charts/echart/AppEchartBar.vue";
 import VueApexCharts from "vue-apexcharts";
 import axios from "axios";
 import useJwt from "@/auth/jwt/useJwt";
 import moment from "moment";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 export default {
   components: {
@@ -182,30 +137,18 @@ export default {
     BFormGroup,
     BImg,
     BTable,
-    BFormSelect,
-    flatPickr,
     AppEchartBar,
     VueApexCharts,
-    BButton,
   },
 
   data() {
     return {
       setRobot: null,
+      startDate: null,
+      endDate: null,
       option: null,
       rangeDate: null,
-      isSelectDate: false,
       isRobot: true,
-      startDate: "",
-      endDate: "",
-      dateConfig: {
-        mode: "range",
-        wrap: true, // set wrap to true only when using 'input-group'
-        altFormat: "d/m/Y",
-        altInput: true,
-        dateFormat: "Y/m/d",
-        defaultDate: [new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date()],
-      },
       requestParam: "",
       robot_img: require("@/assets/images/robot/robot-1.png"),
       robot_data: [],
@@ -355,78 +298,46 @@ export default {
       },
     };
   },
-
-  mounted() {
-    this.endDate = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
-    this.startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .slice(0, 10);
-    this.rangeDate = [this.startDate, this.endDate];
-    axios
-      .post("/api/user/getRobotList", "", {
-        headers: {
-          Authorization: "Bearer " + useJwt.getToken(),
-        },
-      })
-      .then((response) => {
-        this.option = response.data.data;
-        this.setRobot = response.data.data[0].value;
-        if (this.isRobot) {
-          this.requestParam = {
-            robot_serial: this.setRobot,
-            start_date: this.startDate,
-            end_date: this.endDate,
-          };
-        } else {
-          this.requestParam = {
-            robot_serial: this.setRobot,
-            start_date: this.startDate,
-            end_date: this.endDate,
-            unit: this.$route.params.unit,
-            floor: this.$route.params.floor,
-            room: this.$route.params.room,
-          };
-        }
-        this.getDashboardData(this.requestParam);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    console.log("this.isRobot = ", this.isRobot);
-  },
   created() {
-    if (this.$route.params.unit) {
-      this.isRobot = false;
-    }
+    this.setRobot = this.$route.params.robot;
+    this.startDate = this.$route.params.startDate;
+    this.endDate = this.$route.params.endDate;
+    console.log(this.$route.params);
   },
+  mounted() {
+    this.rangeDate = [start_date, end_date];
+    this.requestParam = {
+      robot_serial: this.setRobot,
+      start_date: start_date,
+      end_date: end_date,
+    };
+    this.getDashboardData(this.requestParam);
+    // console.log("this.isRobot = ", this.isRobot);
+  },
+
   methods: {
     selected_robot() {
       console.log("this.rangeDate = ", this.rangeDate);
-      this.startDate = this.rangeDate.split(" to ").slice(0)[0];
-      this.endDate = this.rangeDate.split(" to ").slice(0)[1];
       this.requestParam = {
         robot_serial: this.setRobot,
-        start_date: this.startDate,
-        end_date: this.endDate,
+        start_date: this.rangeDate.split(" to ").slice(0)[0],
+        end_date: this.rangeDate.split(" to ").slice(0)[1],
       };
       this.getDashboardData(this.requestParam);
     },
 
     onDateChange: function (selectedDates, dateStr, instance) {
-      this.startDate = moment(selectedDates[0]).format("YYYY/MM/DD");
-      this.endDate = moment(selectedDates[1]).format("YYYY/MM/DD");
       if (this.isRobot) {
         this.requestParam = {
           robot_serial: this.setRobot,
-          start_date: this.startDate,
-          end_date: this.endDate,
+          start_date: moment(selectedDates[0]).format("YYYY/MM/DD"),
+          end_date: moment(selectedDates[1]).format("YYYY/MM/DD"),
         };
       } else {
         this.requestParam = {
           robot_serial: this.setRobot,
-          start_date: this.startDate,
-          end_date: this.endDate,
+          start_date: moment(selectedDates[0]).format("YYYY/MM/DD"),
+          end_date: moment(selectedDates[1]).format("YYYY/MM/DD"),
           unit: this.$route.params.unit,
           floor: this.$route.params.floor,
           room: this.$route.params.room,
