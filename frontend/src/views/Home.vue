@@ -9,12 +9,19 @@
 [dir] .table td {
   padding: 0.72rem 0.1rem;
 }
+[dir] .calendar-select {
+    border: 1px solid #d8d6de;
+    border-radius: 0.357rem;
+}
+thead {
+    text-align: center;
+}
 </style>
 <template>
   <div>
     <b-row>
       <b-col md="7">
-        <b-card class="text-center">
+        <b-card class="text-center" style="height:95%;">
           <b-card-header>
             <!-- title and subtitle -->
             <div>
@@ -30,8 +37,8 @@
             <!--/ title and subtitle -->
 
             <!-- datepicker -->
-            <div class="d-flex align-items-center">
-              <feather-icon icon="CalendarIcon" size="16" />
+            <div class="d-flex align-items-center calendar-select">
+              <feather-icon icon="CalendarIcon" size="16" style="margin-left:10px;" />
               <flat-pickr
                 v-model="rangeDate"
                 :config="dateConfig"
@@ -89,16 +96,24 @@
                   </b-row>
                 </li>
                 <li>
-                  <span
-                    >{{ $t("home.robotData.CorridorsCount") }} :
-                    {{ robot_data.corridor_disinfected_count }}</span
-                  >
+                  <b-row>
+                    <b-col cols="12" md="6">
+                      <span>{{ $t("home.robotData.CorridorsCount") }}</span>
+                    </b-col>
+                    <b-col cols="12" md="6">
+                      <span>:&nbsp;{{ robot_data.corridor_disinfected_count }}</span>
+                    </b-col>
+                  </b-row>
                 </li>
                 <li>
-                  <span
-                    >{{ $t("home.robotData.completed") }} :
-                    {{ robot_data.completed_tasks }} %</span
-                  >
+                  <b-row>
+                    <b-col cols="12" md="6">
+                      <span>{{ $t("home.robotData.completed") }}</span>
+                    </b-col>
+                    <b-col cols="12" md="6">
+                      <span>:&nbsp;{{ robot_data.completed_tasks }} %</span>
+                    </b-col>
+                  </b-row>
                 </li>
               </ul>
             </b-col>
