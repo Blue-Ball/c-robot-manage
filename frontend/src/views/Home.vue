@@ -55,22 +55,34 @@
             <b-col cols="12" md="8">
               <ul class="robot-data-list list-unstyled text-left">
                 <li>
-                  <span
-                    >{{ $t("home.robotData.TotalTime") }} :
-                    {{ robot_data.total_useage_time }}</span
-                  >
+                  <b-row>
+                    <b-col cols="12" md="6">
+                      <span>{{ $t("home.robotData.TotalTime") }}</span>
+                    </b-col>
+                    <b-col cols="12" md="6">
+                      <span>:&nbsp;{{ robot_data.total_useage_time }}</span>
+                    </b-col>
+                  </b-row>
                 </li>
                 <li>
-                  <span
-                    >{{ $t("home.robotData.AverageTime") }} :
-                    {{ robot_data.average_useage_duration }}</span
-                  >
+                  <b-row>
+                    <b-col cols="12" md="6">
+                      <span>{{ $t("home.robotData.AverageTime") }}</span>
+                    </b-col>
+                    <b-col cols="12" md="6">
+                      <span>:&nbsp;{{ robot_data.average_useage_duration }}</span>
+                    </b-col>
+                  </b-row>
                 </li>
                 <li>
-                  <span
-                    >{{ $t("home.robotData.RoomsCount") }} :
-                    {{ robot_data.rooms_disinfected_count }}</span
-                  >
+                  <b-row>
+                    <b-col cols="12" md="6">
+                      <span>{{ $t("home.robotData.RoomsCount") }}</span>
+                    </b-col>
+                    <b-col cols="12" md="6">
+                      <span>:&nbsp;{{ robot_data.rooms_disinfected_count }}</span>
+                    </b-col>
+                  </b-row>
                 </li>
                 <li>
                   <span
@@ -110,7 +122,7 @@
           ></vue-apex-charts>
         </b-card>
       </b-col>
-      <b-col md="6">
+      <b-col md="6">        
         <b-card>
           <b-card-title>{{ $t("home.chart.Title2") }}</b-card-title>
           <vue-apex-charts
@@ -120,6 +132,7 @@
             :series="chartofunit.series"
           ></vue-apex-charts>
         </b-card>
+        
       </b-col>
     </b-row>
   </div>
@@ -340,7 +353,7 @@ export default {
       })
       .then((response) => {
         this.option = response.data.data;
-        this.setRobot = response.data.data[1].value;
+        this.setRobot = response.data.data[0].value;
         if (this.isRobot) {
           this.requestParam = {
             robot_serial: this.setRobot,
