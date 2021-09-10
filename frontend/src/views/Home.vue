@@ -13,7 +13,7 @@
     border: 1px solid #d8d6de;
     border-radius: 0.357rem;
 }
-thead {
+table {
     text-align: center;
 }
 </style>
@@ -40,7 +40,7 @@ thead {
             <div class="d-flex align-items-center calendar-select">
               <feather-icon icon="CalendarIcon" size="16" style="margin-left:10px;" />
               <flat-pickr
-                v-model="rangeDate"
+                v-model="selectDate"
                 :config="dateConfig"
                 @on-close="onDateChange"
                 class="form-control flat-picker bg-transparent border-0 shadow-none"
@@ -122,7 +122,7 @@ thead {
       </b-col>
 
       <b-col md="5">
-        <b-card>
+        <b-card style="height:95%;">
           <b-card-title class="text-left">{{ $t("home.taskTable.Title") }}</b-card-title>
           <b-table responsive="xl" :items="items" />
         </b-card>
@@ -208,21 +208,21 @@ export default {
     return {
       setRobot: null,
       option: null,
-      rangeDate: null,
+      selectDate: null,
       isSelectDate: false,
       isRobot: true,
       startDate: "",
       endDate: "",
       dateConfig: {
-        mode: "range",
+        // mode: "range",
         wrap: true, // set wrap to true only when using 'input-group'
         altFormat: "d/m/Y",
         altInput: true,
         dateFormat: "Y/m/d",
-        defaultDate: [new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date()],
+        defaultDate: new Date(),
       },
       requestParam: "",
-      robot_img: require("@/assets/images/robot/robot-1.png"),
+      robot_img: require("@/assets/images/robot/cbot.png"),
       robot_data: [],
       items: null,
       chartofday: {
@@ -237,7 +237,7 @@ export default {
             height: 350,
             type: "bar",
           },
-          colors: ["#7367f0", "#ff9f43", "#9ca0a4", "#ff9f43", "#00cfe8"],
+          colors: ["#116af1", "#ef8314", "#8f9192", "#f5c823", "#25d0f7", "#08f93b", "#083eb7"],
           plotOptions: {
             bar: {
               columnWidth: "45%",
@@ -245,6 +245,7 @@ export default {
               dataLabels: {
                 position: "top", // top, center, bottom
               },
+              distributed: true,
             },
           },
           dataLabels: {
@@ -255,10 +256,12 @@ export default {
             offsetY: -20,
             style: {
               fontSize: "12px",
-              // colors: ["#304758"],
+              colors: ["#999"],
             },
           },
-
+          legend: {
+            show: false,
+          },
           xaxis: {
             categories: [],
             position: "bottom",
@@ -333,7 +336,7 @@ export default {
             offsetY: -20,
             style: {
               fontSize: "12px",
-              // colors: ["#304758"],
+              colors: ["#999"],
             },
           },
           legend: {
@@ -372,11 +375,13 @@ export default {
   },
 
   mounted() {
-    this.endDate = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
-    this.startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .slice(0, 10);
-    this.rangeDate = [this.startDate, this.endDate];
+    var curr = new Date;
+    var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+    var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+    this.startDate = moment(firstday).format("YYYY/MM/DD");
+    this.endDate = moment(lastday).format("YYYY/MM/DD");
+    this.selectDate = curr;
+
     axios
       .post("/api/user/getRobotList", "", {
         headers: {
@@ -417,9 +422,13 @@ export default {
   },
   methods: {
     selected_robot() {
-      console.log("this.rangeDate = ", this.rangeDate);
-      this.startDate = this.rangeDate.split(" to ").slice(0)[0];
-      this.endDate = this.rangeDate.split(" to ").slice(0)[1];
+      // console.log("this.selectDate = ", this.selectDate);      
+      var curr = new Date(this.selectDate);
+      var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+      this.startDate = moment(firstday).format("YYYY/MM/DD");
+      this.endDate = moment(lastday).format("YYYY/MM/DD"); 
+
       this.requestParam = {
         robot_serial: this.setRobot,
         start_date: this.startDate,
@@ -428,9 +437,14 @@ export default {
       this.getDashboardData(this.requestParam);
     },
 
-    onDateChange: function (selectedDates, dateStr, instance) {
-      this.startDate = moment(selectedDates[0]).format("YYYY/MM/DD");
-      this.endDate = moment(selectedDates[1]).format("YYYY/MM/DD");
+    onDateChange: function (selectedDate, dateStr, instance) {
+      this.selectDate = selectedDate;
+      var curr = new Date(this.selectDate);
+      var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+      this.startDate = moment(firstday).format("YYYY/MM/DD");
+      this.endDate = moment(lastday).format("YYYY/MM/DD"); 
+      
       if (this.isRobot) {
         this.requestParam = {
           robot_serial: this.setRobot,
