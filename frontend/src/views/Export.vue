@@ -1,6 +1,5 @@
 <style lang="scss">
 @import "@core/scss/vue/libs/vue-select.scss";
-@import "@core/scss/vue/libs/vue-flatpicker.scss";
 .robot-data-list li {
   padding: 8px 0px;
   font-size: larger;
@@ -118,7 +117,6 @@ import {
   BFormGroup,
   BImg,
   BTable,
-  BButton,
 } from "bootstrap-vue";
 import AppEchartBar from "@core/components/charts/echart/AppEchartBar.vue";
 import VueApexCharts from "vue-apexcharts";
@@ -139,15 +137,15 @@ export default {
     BFormGroup,
     BImg,
     BTable,
-    flatPickr,
     AppEchartBar,
     VueApexCharts,
-    BButton,
   },
 
   data() {
     return {
       setRobot: null,
+      startDate: null,
+      endDate: null,
       option: null,
       rangeDate: null,
       isRobot: true,
@@ -300,47 +298,23 @@ export default {
       },
     };
   },
-
+  created() {
+    this.setRobot = this.$route.params.robot;
+    this.startDate = this.$route.params.startDate;
+    this.endDate = this.$route.params.endDate;
+    console.log(this.$route.params);
+  },
   mounted() {
     this.rangeDate = [start_date, end_date];
-    axios
-      .post("/api/user/getRobotList", "", {
-        headers: {
-          Authorization: "Bearer " + useJwt.getToken(),
-        },
-      })
-      .then((response) => {
-        this.option = response.data.data;
-        this.setRobot = response.data.data[1].value;
-        if (this.isRobot) {
-          this.requestParam = {
-            robot_serial: this.setRobot,
-            start_date: start_date,
-            end_date: end_date,
-          };
-        } else {
-          this.requestParam = {
-            robot_serial: this.setRobot,
-            start_date: start_date,
-            end_date: end_date,
-            unit: this.$route.params.unit,
-            floor: this.$route.params.floor,
-            room: this.$route.params.room,
-          };
-        }
-        this.getDashboardData(this.requestParam);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.requestParam = {
+      robot_serial: this.setRobot,
+      start_date: start_date,
+      end_date: end_date,
+    };
+    this.getDashboardData(this.requestParam);
+    // console.log("this.isRobot = ", this.isRobot);
+  },
 
-    console.log("this.isRobot = ", this.isRobot);
-  },
-  created() {
-    if (this.$route.params.unit) {
-      this.isRobot = false;
-    }
-  },
   methods: {
     selected_robot() {
       console.log("this.rangeDate = ", this.rangeDate);

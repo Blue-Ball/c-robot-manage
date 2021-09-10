@@ -126,6 +126,14 @@
         </b-card>
       </b-col>
     </b-row>
+    <router-link
+      :to="{
+        name: 'export',
+        params: { robot: setRobot, startDate: startDate, endDate: endDate },
+      }"
+    >
+      <b-button variant="primary" label="Export"> Export </b-button></router-link
+    >
   </div>
 </template>
 
@@ -141,6 +149,7 @@ import {
   BImg,
   BTable,
   BFormSelect,
+  BButton,
 } from "bootstrap-vue";
 import flatPickr from "vue-flatpickr-component";
 import AppEchartBar from "@core/components/charts/echart/AppEchartBar.vue";
@@ -164,6 +173,7 @@ export default {
     flatPickr,
     AppEchartBar,
     VueApexCharts,
+    BButton,
   },
 
   data() {
@@ -173,6 +183,8 @@ export default {
       rangeDate: null,
       isSelectDate: false,
       isRobot: true,
+      startDate: "",
+      endDate: "",
       dateConfig: {
         mode: "range",
         wrap: true, // set wrap to true only when using 'input-group'
@@ -332,11 +344,11 @@ export default {
   },
 
   mounted() {
-    const end_date = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
-    const start_date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    this.endDate = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
+    this.startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       .toISOString()
       .slice(0, 10);
-    this.rangeDate = [start_date, end_date];
+    this.rangeDate = [this.startDate, this.endDate];
     axios
       .post("/api/user/getRobotList", "", {
         headers: {
@@ -349,14 +361,14 @@ export default {
         if (this.isRobot) {
           this.requestParam = {
             robot_serial: this.setRobot,
-            start_date: start_date,
-            end_date: end_date,
+            start_date: this.startDate,
+            end_date: this.endDate,
           };
         } else {
           this.requestParam = {
             robot_serial: this.setRobot,
-            start_date: start_date,
-            end_date: end_date,
+            start_date: this.startDate,
+            end_date: this.endDate,
             unit: this.$route.params.unit,
             floor: this.$route.params.floor,
             room: this.$route.params.room,
@@ -378,26 +390,30 @@ export default {
   methods: {
     selected_robot() {
       console.log("this.rangeDate = ", this.rangeDate);
+      this.startDate = this.rangeDate.split(" to ").slice(0)[0];
+      this.endDate = this.rangeDate.split(" to ").slice(0)[1];
       this.requestParam = {
         robot_serial: this.setRobot,
-        start_date: this.rangeDate.split(" to ").slice(0)[0],
-        end_date: this.rangeDate.split(" to ").slice(0)[1],
+        start_date: this.startDate,
+        end_date: this.endDate,
       };
       this.getDashboardData(this.requestParam);
     },
 
     onDateChange: function (selectedDates, dateStr, instance) {
+      this.startDate = moment(selectedDates[0]).format("YYYY/MM/DD");
+      this.endDate = moment(selectedDates[1]).format("YYYY/MM/DD");
       if (this.isRobot) {
         this.requestParam = {
           robot_serial: this.setRobot,
-          start_date: moment(selectedDates[0]).format("YYYY/MM/DD"),
-          end_date: moment(selectedDates[1]).format("YYYY/MM/DD"),
+          start_date: this.startDate,
+          end_date: this.endDate,
         };
       } else {
         this.requestParam = {
           robot_serial: this.setRobot,
-          start_date: moment(selectedDates[0]).format("YYYY/MM/DD"),
-          end_date: moment(selectedDates[1]).format("YYYY/MM/DD"),
+          start_date: this.startDate,
+          end_date: this.endDate,
           unit: this.$route.params.unit,
           floor: this.$route.params.floor,
           room: this.$route.params.room,
