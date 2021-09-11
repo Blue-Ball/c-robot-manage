@@ -13,7 +13,7 @@
             <b-col v-for="rooms in floor.room_data" :key="rooms.id">
               <router-link
                 :to="{
-                  name: 'home',
+                  name: 'mapdetail',
                   params: { unit: mapDatas.id, floor: floor.id, room: rooms.id },
                 }"
                 >{{ rooms.id }}</router-link
