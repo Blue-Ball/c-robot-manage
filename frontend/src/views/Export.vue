@@ -19,14 +19,39 @@ table {
     margin-top:10px;
     margin-bottom:10px;
 }
+
+/* Center the loader */
+#loader {
+  border: 8px solid #3cd10f;
+  border-radius: 50%;
+  border-top: 8px solid blue;
+  border-bottom: 8px solid blue;
+  width: 40px;
+  height:40px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 <template>
   <div id="dashboard">
-    <b-row class="download-title">
-      <b-col cols="12" md="12">
-        <b-button variant="primary" @click="generatePDF" label="Export">{{ $t("Download") }}</b-button>
+    <b-row class="download-title">      
+      <b-col cols="12" md="1">
+        <b-button id="download_btn" variant="primary" @click="generatePDF" label="Download">{{ $t("Download") }}</b-button>
       </b-col>
-    </b-row>
+      <b-col cols="12" md="11">
+        <div id="loader"></div>
+      </b-col>
+    </b-row>    
     <div v-for="data in pdfData" :key="data.id">
       <div v-if="data.items != null">
         <div class="pdf-page">
@@ -164,9 +189,6 @@ import VueApexCharts from "vue-apexcharts";
 import axios from "axios";
 import useJwt from "@/auth/jwt/useJwt";
 import moment from "moment";
-// import { jsPDF } from "jspdf";
-// import html2canvas from "html2canvas";
-
 import html2pdf from "html2pdf.js"
 
 export default {
@@ -210,10 +232,13 @@ export default {
   },
   mounted() {
     this.getWeeks();
+    document.getElementById("loader").style.display = "none";
   },
 
   methods: {
     generatePDF() {
+      document.getElementById("download_btn").disabled = true;
+      document.getElementById("loader").style.display = "block";
       let pages = Array.from(window.document.getElementsByClassName('pdf-page'));
       var opt = {
         margin:       1,
@@ -228,7 +253,12 @@ export default {
               pdf.addPage();
           }).from(page).toContainer().toCanvas().toPdf();
       });
-      worker = worker.save();      
+      // worker = worker.save();   
+      worker = worker.save().then(function (){
+        console.log("finishLoading");
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("download_btn").disabled = false;
+      });   
 		},
     async getWeeks() {
       let startDate = new Date(this.startDate);
