@@ -375,9 +375,9 @@ export default {
   },
 
   mounted() {
-    var curr = new Date;
-    var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-    var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+    let curr = new Date;
+    let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
     this.startDate = moment(firstday).format("YYYY/MM/DD");
     this.endDate = moment(lastday).format("YYYY/MM/DD");
     this.selectDate = curr;
@@ -423,9 +423,9 @@ export default {
   methods: {
     selected_robot() {
       // console.log("this.selectDate = ", this.selectDate);      
-      var curr = new Date(this.selectDate);
-      var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-      var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+      let curr = new Date(this.selectDate);
+      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
       this.startDate = moment(firstday).format("YYYY/MM/DD");
       this.endDate = moment(lastday).format("YYYY/MM/DD"); 
 
@@ -439,9 +439,9 @@ export default {
 
     onDateChange: function (selectedDate, dateStr, instance) {
       this.selectDate = selectedDate;
-      var curr = new Date(this.selectDate);
-      var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-      var lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
+      let curr = new Date(this.selectDate);
+      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
       this.startDate = moment(firstday).format("YYYY/MM/DD");
       this.endDate = moment(lastday).format("YYYY/MM/DD"); 
       
