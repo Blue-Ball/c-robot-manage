@@ -237,7 +237,6 @@ export default {
       option: null,
       requestParam: "",
       robot_img: require("@/assets/images/robot/cbot.png"),
-      tempData: [],
       pdfData: [
         // {
         //   index: "",
@@ -511,8 +510,7 @@ export default {
                 },
               },
             };
-            this.tempData[ajaxIndex] = tempData;
-            this.pdfData = this.tempData;
+            this.pdfData.push(tempData);
           } else {
             if (response.data.code != null && response.data.code == "-1") {
               //logout
