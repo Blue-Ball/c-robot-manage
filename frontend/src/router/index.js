@@ -41,6 +41,42 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/mapdetail/:unit/:floor/:room',
+      name: 'mapdetail',
+      component: () => import('@/views/MapDetail.vue'),
+      props: true,
+      meta: {
+        pageTitle: 'Map Detail',
+        breadcrumb: [
+          {
+            text: 'Hospital Map'
+          },
+          {
+            text: 'Map Detail',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/export/:startDate/:endDate',
+      name: 'export',
+      component: () => import('@/views/Export.vue'),
+      props: true,
+      meta: {
+        pageTitle: 'Export PDF',
+        breadcrumb: [
+          {
+            text: 'Home'
+          },
+          {
+            text: 'Export PDF',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/authentication/Login.vue'),
@@ -60,6 +96,7 @@ const router = new VueRouter({
         redirectIfLoggedIn: true,
       },
     },
+    
     {
       path: '/forgot-password',
       name: 'auth-forgot-password',
