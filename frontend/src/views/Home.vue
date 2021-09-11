@@ -154,14 +154,6 @@ table {
         
       </b-col>
     </b-row>
-    <router-link
-      :to="{
-        name: 'export',
-        params: { robot: setRobot, startDate: startDate, endDate: endDate },
-      }"
-    >
-      <b-button variant="primary" label="Export"> Export </b-button></router-link
-    >
   </div>
 </template>
 
@@ -177,7 +169,6 @@ import {
   BImg,
   BTable,
   BFormSelect,
-  BButton,
 } from "bootstrap-vue";
 import flatPickr from "vue-flatpickr-component";
 import AppEchartBar from "@core/components/charts/echart/AppEchartBar.vue";
@@ -201,7 +192,6 @@ export default {
     flatPickr,
     AppEchartBar,
     VueApexCharts,
-    BButton,
   },
 
   data() {
