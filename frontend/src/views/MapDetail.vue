@@ -214,6 +214,9 @@ export default {
       robot_img: require("@/assets/images/robot/cbot.png"),
       robot_data: [],
       items: null,
+      unit: null,
+      floor: null,
+      room: null,
       chartofday: {
         series: [
           {
@@ -370,7 +373,6 @@ export default {
       },
     };
   },
-
   mounted() {
     let curr = new Date();
     let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
@@ -378,51 +380,43 @@ export default {
     this.startDate = moment(firstday).format("YYYY/MM/DD");
     this.endDate = moment(lastday).format("YYYY/MM/DD");
     this.selectDate = curr;
-
-    axios
-      .post("/api/user/getRobotList", "", {
-        headers: {
-          Authorization: "Bearer " + useJwt.getToken(),
-        },
-      })
-      .then((response) => {
-        this.option = response.data.data;
-        this.setRobot = response.data.data[0].value;
-        this.requestParam = {
-          robot_serial: this.setRobot,
-          start_date: this.startDate,
-          end_date: this.endDate,
-          unit: this.$route.params.unit,
-          floor: this.$route.params.floor,
-          room: this.$route.params.room,
-        };
-        this.getDashboardData(this.requestParam);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    if (this.$route.params.room) {
+      axios
+        .post("/api/user/getRobotList", "", {
+          headers: {
+            Authorization: "Bearer " + useJwt.getToken(),
+          },
+        })
+        .then((response) => {
+          this.option = response.data.data;
+          this.setRobot = response.data.data[0].value;
+          this.getDashboardData(this.getRequestParam());
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     console.log("this.isRobot = ", this.isRobot);
   },
 
   methods: {
-    selected_robot() {
-      // console.log("this.selectDate = ", this.selectDate);
-      let curr = new Date(this.selectDate);
-      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
-      this.startDate = moment(firstday).format("YYYY/MM/DD");
-      this.endDate = moment(lastday).format("YYYY/MM/DD");
-
-      this.requestParam = {
+    getRequestParam: function () {
+      return (this.requestParam = {
         robot_serial: this.setRobot,
         start_date: this.startDate,
         end_date: this.endDate,
         unit: this.$route.params.unit,
         floor: this.$route.params.floor,
         room: this.$route.params.room,
-      };
-      this.getDashboardData(this.requestParam);
+      });
+    },
+    selected_robot() {
+      let curr = new Date(this.selectDate);
+      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+      this.startDate = moment(firstday).format("YYYY/MM/DD");
+      this.endDate = moment(lastday).format("YYYY/MM/DD");
+      this.getDashboardData(this.getRequestParam());
     },
 
     onDateChange: function (selectedDate, dateStr, instance) {
@@ -432,16 +426,7 @@ export default {
       let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
       this.startDate = moment(firstday).format("YYYY/MM/DD");
       this.endDate = moment(lastday).format("YYYY/MM/DD");
-
-      this.requestParam = {
-        robot_serial: this.setRobot,
-        start_date: this.startDate,
-        end_date: this.endDate,
-        unit: this.$route.params.unit,
-        floor: this.$route.params.floor,
-        room: this.$route.params.room,
-      };
-      this.getDashboardData(this.requestParam);
+      this.getDashboardData(this.getRequestParam());
     },
     getDashboardData(params) {
       axios

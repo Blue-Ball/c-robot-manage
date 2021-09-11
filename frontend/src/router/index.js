@@ -41,7 +41,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/mapdetail',
+      path: '/mapdetail/:unit/:floor/:room',
       name: 'mapdetail',
       component: () => import('@/views/MapDetail.vue'),
       props: true,
