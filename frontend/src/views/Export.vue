@@ -9,15 +9,15 @@
   padding: 0.72rem 0.1rem;
 }
 [dir] .calendar-select {
-    border: 1px solid #d8d6de;
-    border-radius: 0.357rem;
+  border: 1px solid #d8d6de;
+  border-radius: 0.357rem;
 }
 table {
-    text-align: center;
+  text-align: center;
 }
 [dir] .download-title {
-    margin-top:10px;
-    margin-bottom:10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 /* Center the loader */
@@ -27,37 +27,52 @@ table {
   border-top: 8px solid blue;
   border-bottom: 8px solid blue;
   width: 40px;
-  height:40px;
+  height: 40px;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
 }
 
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
 <template>
   <div id="dashboard">
-    <b-row class="download-title">      
+    <b-row class="download-title">
       <b-col cols="12" md="1">
-        <b-button id="download_btn" variant="primary" @click="generatePDF" label="Download">{{ $t("Download") }}</b-button>
+        <b-button
+          id="download_btn"
+          variant="primary"
+          @click="generatePDF"
+          label="Download"
+          >{{ $t("Download") }}</b-button
+        >
       </b-col>
       <b-col cols="12" md="11">
         <div id="loader"></div>
       </b-col>
-    </b-row>    
+    </b-row>
+
     <div v-for="data in pdfData" :key="data.id">
-      <div v-if="data.items != null">
+      <div v-if="data.items != null || data.items.length > 0">
         <div class="pdf-page">
           <b-row>
             <b-col md="7">
-              <b-card class="text-center" style="height:95%;">
+              <b-card class="text-center" style="height: 95%">
                 <b-card-header>
                   <div>
                     <h4 class="font-weight-bolder">{{ data.rangeDate }}</h4>
@@ -91,7 +106,9 @@ table {
                             <span>{{ $t("home.robotData.AverageTime") }}</span>
                           </b-col>
                           <b-col cols="12" md="6">
-                            <span>:&nbsp;{{ data.robot_data.average_useage_duration }}</span>
+                            <span
+                              >:&nbsp;{{ data.robot_data.average_useage_duration }}</span
+                            >
                           </b-col>
                         </b-row>
                       </li>
@@ -101,7 +118,9 @@ table {
                             <span>{{ $t("home.robotData.RoomsCount") }}</span>
                           </b-col>
                           <b-col cols="12" md="6">
-                            <span>:&nbsp;{{ data.robot_data.rooms_disinfected_count }}</span>
+                            <span
+                              >:&nbsp;{{ data.robot_data.rooms_disinfected_count }}</span
+                            >
                           </b-col>
                         </b-row>
                       </li>
@@ -111,7 +130,11 @@ table {
                             <span>{{ $t("home.robotData.CorridorsCount") }}</span>
                           </b-col>
                           <b-col cols="12" md="6">
-                            <span>:&nbsp;{{ data.robot_data.corridor_disinfected_count }}</span>
+                            <span
+                              >:&nbsp;{{
+                                data.robot_data.corridor_disinfected_count
+                              }}</span
+                            >
                           </b-col>
                         </b-row>
                       </li>
@@ -132,7 +155,7 @@ table {
             </b-col>
 
             <b-col md="5">
-              <b-card style="height:95%;">
+              <b-card style="height: 95%">
                 <b-card-title class="text-left">{{
                   $t("home.taskTable.Title")
                 }}</b-card-title>
@@ -189,7 +212,7 @@ import VueApexCharts from "vue-apexcharts";
 import axios from "axios";
 import useJwt from "@/auth/jwt/useJwt";
 import moment from "moment";
-import html2pdf from "html2pdf.js"
+import html2pdf from "html2pdf.js";
 
 export default {
   components: {
@@ -212,17 +235,20 @@ export default {
       startDate: null,
       endDate: null,
       option: null,
-
       requestParam: "",
       robot_img: require("@/assets/images/robot/cbot.png"),
+      tempData: [],
       pdfData: [
-        {
-          rangeDate: "",
-          items: null,
-          robot_data: [],
-          chartofday: [],
-          chartofunit: [],
-        },
+        // {
+        //   index: "",
+        //   data: {
+        //     rangeDate: "",
+        //     items: null,
+        //     robot_data: [],
+        //     chartofday: [],
+        //     chartofunit: [],
+        //   },
+        // },
       ],
     };
   },
@@ -239,28 +265,34 @@ export default {
     generatePDF() {
       document.getElementById("download_btn").disabled = true;
       document.getElementById("loader").style.display = "block";
-      let pages = Array.from(window.document.getElementsByClassName('pdf-page'));
+      let pages = Array.from(window.document.getElementsByClassName("pdf-page"));
       var opt = {
-        margin:       1,
-        filename:     'robot-report.pdf',
-        image:        { type: 'jpeg', quality: 1.0 },
-        html2canvas:  { scale: 1.2 },
-        jsPDF:        { unit: 'mm', format: 'a3', orientation: 'landscape'},
+        margin: 1,
+        filename: "robot-report.pdf",
+        image: { type: "jpeg", quality: 1.0 },
+        html2canvas: { scale: 1.2 },
+        jsPDF: { unit: "mm", format: "a3", orientation: "landscape" },
       };
       var worker = html2pdf().set(opt).from(pages[0]).toPdf();
       pages.slice(1).forEach(function (page) {
-          worker = worker.get('pdf').then(function (pdf) {
-              pdf.addPage();
-          }).from(page).toContainer().toCanvas().toPdf();
+        worker = worker
+          .get("pdf")
+          .then(function (pdf) {
+            pdf.addPage();
+          })
+          .from(page)
+          .toContainer()
+          .toCanvas()
+          .toPdf();
       });
-      // worker = worker.save();   
-      worker = worker.save().then(function (){
+      // worker = worker.save();
+      worker = worker.save().then(function () {
         console.log("finishLoading");
         document.getElementById("loader").style.display = "none";
         document.getElementById("download_btn").disabled = false;
-      });   
-		},
-    async getWeeks() {
+      });
+    },
+    getWeeks() {
       let startDate = new Date(this.startDate);
       let lastdate = new Date(this.endDate);
       let firstSunday = new Date(
@@ -269,6 +301,7 @@ export default {
       let lastSatday = new Date(
         lastdate.setDate(lastdate.getDate() - lastdate.getDay() + 6)
       );
+      var ajaxIndex = 0;
       for (
         let i = firstSunday;
         i <= lastSatday;
@@ -289,10 +322,10 @@ export default {
           moment(sunday).format("DD.MM.YYYY") +
           " ~ " +
           moment(saturday).format("DD.MM.YYYY");
-        this.getDashboardData(this.requestParam, rangeDate);
+        this.getDashboardData(this.requestParam, rangeDate, ajaxIndex++);
       }
     },
-    async getDashboardData(params, rangeDate) {
+    async getDashboardData(params, rangeDate, ajaxIndex) {
       axios
         .post("/api/user/dashboard", params, {
           headers: {
@@ -336,7 +369,15 @@ export default {
                     height: 350,
                     type: "bar",
                   },
-                  colors: ["#116af1", "#ef8314", "#8f9192", "#f5c823", "#25d0f7", "#08f93b", "#083eb7"],
+                  colors: [
+                    "#116af1",
+                    "#ef8314",
+                    "#8f9192",
+                    "#f5c823",
+                    "#25d0f7",
+                    "#08f93b",
+                    "#083eb7",
+                  ],
                   plotOptions: {
                     bar: {
                       columnWidth: "45%",
@@ -470,7 +511,8 @@ export default {
                 },
               },
             };
-            this.pdfData.push(tempData);
+            this.tempData[ajaxIndex] = tempData;
+            this.pdfData = this.tempData;
           } else {
             if (response.data.code != null && response.data.code == "-1") {
               //logout
@@ -481,8 +523,9 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-        });        
+        });
     },
   },
+  computed: {},
 };
 </script>
