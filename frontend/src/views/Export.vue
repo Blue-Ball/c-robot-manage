@@ -8,104 +8,140 @@
 [dir] .table td {
   padding: 0.72rem 0.1rem;
 }
+[dir] .calendar-select {
+    border: 1px solid #d8d6de;
+    border-radius: 0.357rem;
+}
+table {
+    text-align: center;
+}
+[dir] .download-title {
+    margin-top:10px;
+    margin-bottom:10px;
+}
 </style>
 <template>
   <div id="dashboard">
-    <div class="pdf-page" v-for="data in pdfData" :key="data.id">
-      <b-row>
-        <b-col md="7">
-          <b-card class="text-center">
-            <b-card-header>
-              <div>
-                <h4 class="font-weight-bolder">{{ data.rangeDate }}</h4>
-              </div>
-              <!-- <div class="d-flex align-items-center">
-                <b-card-text>  </b-card-text>
-              </div>
-              datepicker -->
-            </b-card-header>
-            <b-row class="my-2">
-              <b-col
-                cols="12"
-                md="4"
-                class="d-flex align-items-center justify-content-center mb-2 mb-md-0"
-              >
-                <div class="d-flex align-items-center justify-content-center">
-                  <b-img :src="robot_img" class="product-img" fluid />
-                </div>
-              </b-col>
-              <b-col cols="12" md="8">
-                <ul class="robot-data-list list-unstyled text-left">
-                  <li>
-                    <span
-                      >{{ $t("home.robotData.TotalTime") }} :
-                      {{ data.robot_data.total_useage_time }}</span
-                    >
-                  </li>
-                  <li>
-                    <span
-                      >{{ $t("home.robotData.AverageTime") }} :
-                      {{ data.robot_data.average_useage_duration }}</span
-                    >
-                  </li>
-                  <li>
-                    <span
-                      >{{ $t("home.robotData.RoomsCount") }} :
-                      {{ data.robot_data.rooms_disinfected_count }}</span
-                    >
-                  </li>
-                  <li>
-                    <span
-                      >{{ $t("home.robotData.CorridorsCount") }} :
-                      {{ data.robot_data.corridor_disinfected_count }}</span
-                    >
-                  </li>
-                  <li>
-                    <span
-                      >{{ $t("home.robotData.completed") }} :
-                      {{ data.robot_data.completed_tasks }} %</span
-                    >
-                  </li>
-                </ul>
-              </b-col>
-            </b-row>
-          </b-card>
-        </b-col>
+    <b-row class="download-title">
+      <b-col cols="12" md="12">
+        <b-button variant="primary" @click="generatePDF" label="Export">{{ $t("Download") }}</b-button>
+      </b-col>
+    </b-row>
+    <div v-for="data in pdfData" :key="data.id">
+      <div v-if="data.items != null">
+        <div class="pdf-page">
+          <b-row>
+            <b-col md="7">
+              <b-card class="text-center" style="height:95%;">
+                <b-card-header>
+                  <div>
+                    <h4 class="font-weight-bolder">{{ data.rangeDate }}</h4>
+                  </div>
+                </b-card-header>
+                <b-row class="my-2">
+                  <b-col
+                    cols="12"
+                    md="4"
+                    class="d-flex align-items-center justify-content-center mb-2 mb-md-0"
+                  >
+                    <div class="d-flex align-items-center justify-content-center">
+                      <b-img :src="robot_img" class="product-img" fluid />
+                    </div>
+                  </b-col>
+                  <b-col cols="12" md="8">
+                    <ul class="robot-data-list list-unstyled text-left">
+                      <li>
+                        <b-row>
+                          <b-col cols="12" md="6">
+                            <span>{{ $t("home.robotData.TotalTime") }}</span>
+                          </b-col>
+                          <b-col cols="12" md="6">
+                            <span>:&nbsp;{{ data.robot_data.total_useage_time }}</span>
+                          </b-col>
+                        </b-row>
+                      </li>
+                      <li>
+                        <b-row>
+                          <b-col cols="12" md="6">
+                            <span>{{ $t("home.robotData.AverageTime") }}</span>
+                          </b-col>
+                          <b-col cols="12" md="6">
+                            <span>:&nbsp;{{ data.robot_data.average_useage_duration }}</span>
+                          </b-col>
+                        </b-row>
+                      </li>
+                      <li>
+                        <b-row>
+                          <b-col cols="12" md="6">
+                            <span>{{ $t("home.robotData.RoomsCount") }}</span>
+                          </b-col>
+                          <b-col cols="12" md="6">
+                            <span>:&nbsp;{{ data.robot_data.rooms_disinfected_count }}</span>
+                          </b-col>
+                        </b-row>
+                      </li>
+                      <li>
+                        <b-row>
+                          <b-col cols="12" md="6">
+                            <span>{{ $t("home.robotData.CorridorsCount") }}</span>
+                          </b-col>
+                          <b-col cols="12" md="6">
+                            <span>:&nbsp;{{ data.robot_data.corridor_disinfected_count }}</span>
+                          </b-col>
+                        </b-row>
+                      </li>
+                      <li>
+                        <b-row>
+                          <b-col cols="12" md="6">
+                            <span>{{ $t("home.robotData.completed") }}</span>
+                          </b-col>
+                          <b-col cols="12" md="6">
+                            <span>:&nbsp;{{ data.robot_data.completed_tasks }} %</span>
+                          </b-col>
+                        </b-row>
+                      </li>
+                    </ul>
+                  </b-col>
+                </b-row>
+              </b-card>
+            </b-col>
 
-        <b-col md="5">
-          <b-card>
-            <b-card-title class="text-left">{{
-              $t("home.taskTable.Title")
-            }}</b-card-title>
-            <b-table responsive="xl" :items="data.items" />
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col md="6">
-          <b-card>
-            <b-card-title>{{ $t("home.chart.Title1") }}</b-card-title>
-            <vue-apex-charts
-              type="bar"
-              height="350"
-              :options="data.chartofday.chartOptions"
-              :series="data.chartofday.series"
-              ref="chart"
-            ></vue-apex-charts>
-          </b-card>
-        </b-col>
-        <b-col md="6">
-          <b-card>
-            <b-card-title>{{ $t("home.chart.Title2") }}</b-card-title>
-            <vue-apex-charts
-              type="bar"
-              height="350"
-              :options="data.chartofunit.chartOptions"
-              :series="data.chartofunit.series"
-            ></vue-apex-charts>
-          </b-card>
-        </b-col>
-      </b-row>
+            <b-col md="5">
+              <b-card style="height:95%;">
+                <b-card-title class="text-left">{{
+                  $t("home.taskTable.Title")
+                }}</b-card-title>
+                <b-table responsive="xl" :items="data.items" />
+              </b-card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col md="6">
+              <b-card>
+                <b-card-title>{{ $t("home.chart.Title1") }}</b-card-title>
+                <vue-apex-charts
+                  type="bar"
+                  height="350"
+                  :options="data.chartofday.chartOptions"
+                  :series="data.chartofday.series"
+                  ref="chart"
+                ></vue-apex-charts>
+              </b-card>
+            </b-col>
+            <b-col md="6">
+              <b-card>
+                <b-card-title>{{ $t("home.chart.Title2") }}</b-card-title>
+                <vue-apex-charts
+                  type="bar"
+                  height="350"
+                  :options="data.chartofunit.chartOptions"
+                  :series="data.chartofunit.series"
+                ></vue-apex-charts>
+              </b-card>
+            </b-col>
+          </b-row>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -121,14 +157,17 @@ import {
   BFormGroup,
   BImg,
   BTable,
+  BButton,
 } from "bootstrap-vue";
 import AppEchartBar from "@core/components/charts/echart/AppEchartBar.vue";
 import VueApexCharts from "vue-apexcharts";
 import axios from "axios";
 import useJwt from "@/auth/jwt/useJwt";
 import moment from "moment";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+// import { jsPDF } from "jspdf";
+// import html2canvas from "html2canvas";
+
+import html2pdf from "html2pdf.js"
 
 export default {
   components: {
@@ -143,6 +182,7 @@ export default {
     BTable,
     AppEchartBar,
     VueApexCharts,
+    BButton,
   },
 
   data() {
@@ -152,7 +192,7 @@ export default {
       option: null,
 
       requestParam: "",
-      robot_img: require("@/assets/images/robot/robot-1.png"),
+      robot_img: require("@/assets/images/robot/cbot.png"),
       pdfData: [
         {
           rangeDate: "",
@@ -173,7 +213,24 @@ export default {
   },
 
   methods: {
-    getWeeks() {
+    generatePDF() {
+      let pages = Array.from(window.document.getElementsByClassName('pdf-page'));
+      var opt = {
+        margin:       1,
+        filename:     'robot-report.pdf',
+        image:        { type: 'jpeg', quality: 1.0 },
+        html2canvas:  { scale: 1.2 },
+        jsPDF:        { unit: 'mm', format: 'a3', orientation: 'landscape'},
+      };
+      var worker = html2pdf().set(opt).from(pages[0]).toPdf();
+      pages.slice(1).forEach(function (page) {
+          worker = worker.get('pdf').then(function (pdf) {
+              pdf.addPage();
+          }).from(page).toContainer().toCanvas().toPdf();
+      });
+      worker = worker.save();      
+		},
+    async getWeeks() {
       let startDate = new Date(this.startDate);
       let lastdate = new Date(this.endDate);
       let firstSunday = new Date(
@@ -194,19 +251,18 @@ export default {
           firstSunday.setDate(firstSunday.getDate() - firstSunday.getDay() + 6)
         );
         this.requestParam = {
-          robot_serial: 1,
+          robot_serial: 0,
           start_date: sunday,
           end_date: saturday,
         };
-        this.rangeDate =
-          moment(sunday).format("DD/MM/YYYY") +
+        let rangeDate =
+          moment(sunday).format("DD.MM.YYYY") +
           " ~ " +
-          moment(saturday).format("DD/MM/YYYY");
-
-        this.getDashboardData(this.requestParam);
+          moment(saturday).format("DD.MM.YYYY");
+        this.getDashboardData(this.requestParam, rangeDate);
       }
     },
-    getDashboardData(params) {
+    async getDashboardData(params, rangeDate) {
       axios
         .post("/api/user/dashboard", params, {
           headers: {
@@ -215,7 +271,6 @@ export default {
         })
         .then((response) => {
           if (response.data.status == 1) {
-            console.log("this.pdfData= ", this.pdfData);
             const robotInfo = response.data.data.total_info;
             const task_info = response.data.data.performed_task_info;
             const task_day_info = response.data.data.performed_task_day_info;
@@ -236,7 +291,7 @@ export default {
               return x.unit;
             });
             let tempData = {
-              rangeDate: this.rangeDate,
+              rangeDate: rangeDate,
               items: task_info,
               robot_data: robotInfo,
               chartofday: {
@@ -251,7 +306,7 @@ export default {
                     height: 350,
                     type: "bar",
                   },
-                  colors: ["#7367f0", "#ff9f43", "#9ca0a4", "#ff9f43", "#00cfe8"],
+                  colors: ["#116af1", "#ef8314", "#8f9192", "#f5c823", "#25d0f7", "#08f93b", "#083eb7"],
                   plotOptions: {
                     bar: {
                       columnWidth: "45%",
@@ -259,6 +314,7 @@ export default {
                       dataLabels: {
                         position: "top", // top, center, bottom
                       },
+                      distributed: true,
                     },
                   },
                   dataLabels: {
@@ -269,10 +325,12 @@ export default {
                     offsetY: -20,
                     style: {
                       fontSize: "12px",
-                      // colors: ["#304758"],
+                      colors: ["#999"],
                     },
                   },
-
+                  legend: {
+                    show: false,
+                  },
                   xaxis: {
                     categories: daysOflabel,
                     position: "bottom",
@@ -346,7 +404,7 @@ export default {
                     offsetY: -20,
                     style: {
                       fontSize: "12px",
-                      // colors: ["#304758"],
+                      colors: ["#999"],
                     },
                   },
                   legend: {
@@ -393,7 +451,7 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-        });
+        });        
     },
   },
 };
