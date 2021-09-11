@@ -167,14 +167,14 @@ export default {
         altFormat: "d/m/Y",
         altInput: true,
         dateFormat: "Y/m/d",
-        defaultDate: [new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date()],
+        defaultDate: [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()],
       },
     };
   },
   mounted() {
     this.userData = getUserData();
     this.endDate = new Date().toJSON().slice(0, 10).replace(/-/g, "-");
-    this.startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    this.startDate = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
       .toISOString()
       .slice(0, 10);
   },
