@@ -67,15 +67,15 @@ table {
       </b-col>
     </b-row>
 
-    <div v-for="data in pdfData" :key="data.id">
-      <div v-if="data.items != null || data.items.length > 0">
+    <div v-for="data in sortedArray" :key="data.index">
+      <div v-if="data.data.items != null">
         <div class="pdf-page">
           <b-row>
             <b-col md="7">
               <b-card class="text-center" style="height: 95%">
                 <b-card-header>
                   <div>
-                    <h4 class="font-weight-bolder">{{ data.rangeDate }}</h4>
+                    <h4 class="font-weight-bolder">{{ data.data.rangeDate }}</h4>
                   </div>
                 </b-card-header>
                 <b-row class="my-2">
@@ -96,7 +96,9 @@ table {
                             <span>{{ $t("home.robotData.TotalTime") }}</span>
                           </b-col>
                           <b-col cols="12" md="6">
-                            <span>:&nbsp;{{ data.robot_data.total_useage_time }}</span>
+                            <span
+                              >:&nbsp;{{ data.data.robot_data.total_useage_time }}</span
+                            >
                           </b-col>
                         </b-row>
                       </li>
@@ -107,7 +109,9 @@ table {
                           </b-col>
                           <b-col cols="12" md="6">
                             <span
-                              >:&nbsp;{{ data.robot_data.average_useage_duration }}</span
+                              >:&nbsp;{{
+                                data.data.robot_data.average_useage_duration
+                              }}</span
                             >
                           </b-col>
                         </b-row>
@@ -119,7 +123,9 @@ table {
                           </b-col>
                           <b-col cols="12" md="6">
                             <span
-                              >:&nbsp;{{ data.robot_data.rooms_disinfected_count }}</span
+                              >:&nbsp;{{
+                                data.data.robot_data.rooms_disinfected_count
+                              }}</span
                             >
                           </b-col>
                         </b-row>
@@ -132,7 +138,7 @@ table {
                           <b-col cols="12" md="6">
                             <span
                               >:&nbsp;{{
-                                data.robot_data.corridor_disinfected_count
+                                data.data.robot_data.corridor_disinfected_count
                               }}</span
                             >
                           </b-col>
@@ -144,7 +150,9 @@ table {
                             <span>{{ $t("home.robotData.completed") }}</span>
                           </b-col>
                           <b-col cols="12" md="6">
-                            <span>:&nbsp;{{ data.robot_data.completed_tasks }} %</span>
+                            <span
+                              >:&nbsp;{{ data.data.robot_data.completed_tasks }} %</span
+                            >
                           </b-col>
                         </b-row>
                       </li>
@@ -159,7 +167,7 @@ table {
                 <b-card-title class="text-left">{{
                   $t("home.taskTable.Title")
                 }}</b-card-title>
-                <b-table responsive="xl" :items="data.items" />
+                <b-table responsive="xl" :items="data.data.items" />
               </b-card>
             </b-col>
           </b-row>
@@ -170,8 +178,8 @@ table {
                 <vue-apex-charts
                   type="bar"
                   height="350"
-                  :options="data.chartofday.chartOptions"
-                  :series="data.chartofday.series"
+                  :options="data.data.chartofday.chartOptions"
+                  :series="data.data.chartofday.series"
                   ref="chart"
                 ></vue-apex-charts>
               </b-card>
@@ -182,8 +190,8 @@ table {
                 <vue-apex-charts
                   type="bar"
                   height="350"
-                  :options="data.chartofunit.chartOptions"
-                  :series="data.chartofunit.series"
+                  :options="data.data.chartofunit.chartOptions"
+                  :series="data.data.chartofunit.series"
                 ></vue-apex-charts>
               </b-card>
             </b-col>
@@ -259,7 +267,6 @@ export default {
     this.getWeeks();
     document.getElementById("loader").style.display = "none";
   },
-
   methods: {
     generatePDF() {
       document.getElementById("download_btn").disabled = true;
@@ -510,7 +517,7 @@ export default {
                 },
               },
             };
-            this.pdfData.push(tempData);
+            this.pdfData.push({ index: ajaxIndex, data: tempData });
           } else {
             if (response.data.code != null && response.data.code == "-1") {
               //logout
@@ -524,6 +531,19 @@ export default {
         });
     },
   },
-  computed: {},
+  computed: {
+    sortedArray: function () {
+      function compare(a, b) {
+        if (a.index < b.index) return -1;
+        if (a.index > b.index) return 1;
+        return 0;
+      }
+
+      return this.pdfData.sort(compare);
+    },
+  },
+  //  watch: {
+  //   this.pdfData
+  // },
 };
 </script>
