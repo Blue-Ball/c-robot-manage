@@ -10,18 +10,18 @@
   padding: 0.72rem 0.1rem;
 }
 [dir] .calendar-select {
-    border: 1px solid #d8d6de;
-    border-radius: 0.357rem;
+  border: 1px solid #d8d6de;
+  border-radius: 0.357rem;
 }
 table {
-    text-align: center;
+  text-align: center;
 }
 </style>
 <template>
   <div>
     <b-row>
       <b-col md="7">
-        <b-card class="text-center" style="height:95%;">
+        <b-card class="text-center" style="height: 95%">
           <b-card-header>
             <!-- title and subtitle -->
             <div>
@@ -38,7 +38,7 @@ table {
 
             <!-- datepicker -->
             <div class="d-flex align-items-center calendar-select">
-              <feather-icon icon="CalendarIcon" size="16" style="margin-left:10px;" />
+              <feather-icon icon="CalendarIcon" size="16" style="margin-left: 10px" />
               <flat-pickr
                 v-model="selectDate"
                 :config="dateConfig"
@@ -122,7 +122,7 @@ table {
       </b-col>
 
       <b-col md="5">
-        <b-card style="height:95%;">
+        <b-card style="height: 95%">
           <b-card-title class="text-left">{{ $t("home.taskTable.Title") }}</b-card-title>
           <b-table responsive="xl" :items="items" />
         </b-card>
@@ -141,7 +141,7 @@ table {
           ></vue-apex-charts>
         </b-card>
       </b-col>
-      <b-col md="6">        
+      <b-col md="6">
         <b-card>
           <b-card-title>{{ $t("home.chart.Title2") }}</b-card-title>
           <vue-apex-charts
@@ -151,7 +151,6 @@ table {
             :series="chartofunit.series"
           ></vue-apex-charts>
         </b-card>
-        
       </b-col>
     </b-row>
   </div>
@@ -216,18 +215,21 @@ export default {
       robot_data: [],
       items: null,
       chartofday: {
-        series: [
-          {
-            name: "Performed Tasks By Day",
-            data: [],
-          },
-        ],
+        series: [],
         chartOptions: {
           chart: {
             height: 350,
             type: "bar",
           },
-          colors: ["#116af1", "#ef8314", "#8f9192", "#f5c823", "#25d0f7", "#08f93b", "#083eb7"],
+          colors: [
+            "#116af1",
+            "#ef8314",
+            "#8f9192",
+            "#f5c823",
+            "#25d0f7",
+            "#08f93b",
+            "#083eb7",
+          ],
           plotOptions: {
             bar: {
               columnWidth: "45%",
@@ -253,7 +255,7 @@ export default {
             show: false,
           },
           xaxis: {
-            categories: [],
+            categories: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
             position: "bottom",
             axisBorder: {
               show: false,
@@ -293,11 +295,7 @@ export default {
       },
 
       chartofunit: {
-        series: [
-          {
-            data: [],
-          },
-        ],
+        series: [],
         chartOptions: {
           chart: {
             height: 350,
@@ -365,13 +363,6 @@ export default {
   },
 
   mounted() {
-    let curr = new Date;
-    let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
-    this.startDate = moment(firstday).format("YYYY/MM/DD");
-    this.endDate = moment(lastday).format("YYYY/MM/DD");
-    this.selectDate = curr;
-
     axios
       .post("/api/user/getRobotList", "", {
         headers: {
@@ -381,23 +372,7 @@ export default {
       .then((response) => {
         this.option = response.data.data;
         this.setRobot = response.data.data[0].value;
-        if (this.isRobot) {
-          this.requestParam = {
-            robot_serial: this.setRobot,
-            start_date: this.startDate,
-            end_date: this.endDate,
-          };
-        } else {
-          this.requestParam = {
-            robot_serial: this.setRobot,
-            start_date: this.startDate,
-            end_date: this.endDate,
-            unit: this.$route.params.unit,
-            floor: this.$route.params.floor,
-            room: this.$route.params.room,
-          };
-        }
-        this.getDashboardData(this.requestParam);
+        this.getDashboardData(this.getRequestParams());
       })
       .catch((error) => {
         console.log(error);
@@ -411,47 +386,32 @@ export default {
     }
   },
   methods: {
-    selected_robot() {
-      // console.log("this.selectDate = ", this.selectDate);      
-      let curr = new Date(this.selectDate);
-      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
-      this.startDate = moment(firstday).format("YYYY/MM/DD");
-      this.endDate = moment(lastday).format("YYYY/MM/DD"); 
+    getRequestParams: function (selectDate = null) {
+      let curr = new Date();
+      if (selectDate == null) curr = curr;
+      else curr = new Date(selectDate);
 
+      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+
+      this.startDate = moment(firstday).subtract(1, "days").format("YYYY/MM/DD");
+      this.endDate = moment(lastday).subtract(1, "days").format("YYYY/MM/DD");
+      this.selectDate = curr;
+      console.log(this.startDate, this.endDate);
       this.requestParam = {
         robot_serial: this.setRobot,
         start_date: this.startDate,
         end_date: this.endDate,
       };
-      this.getDashboardData(this.requestParam);
+      return this.requestParam;
+    },
+    selected_robot() {
+      this.getDashboardData(this.getRequestParams(this.selectDate));
     },
 
     onDateChange: function (selectedDate, dateStr, instance) {
       this.selectDate = selectedDate;
-      let curr = new Date(this.selectDate);
-      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay()+6));
-      this.startDate = moment(firstday).format("YYYY/MM/DD");
-      this.endDate = moment(lastday).format("YYYY/MM/DD"); 
-      
-      if (this.isRobot) {
-        this.requestParam = {
-          robot_serial: this.setRobot,
-          start_date: this.startDate,
-          end_date: this.endDate,
-        };
-      } else {
-        this.requestParam = {
-          robot_serial: this.setRobot,
-          start_date: this.startDate,
-          end_date: this.endDate,
-          unit: this.$route.params.unit,
-          floor: this.$route.params.floor,
-          room: this.$route.params.room,
-        };
-      }
-      this.getDashboardData(this.requestParam);
+      this.getDashboardData(this.getRequestParams(selectedDate));
     },
     getDashboardData(params) {
       axios
@@ -461,6 +421,7 @@ export default {
           },
         })
         .then((response) => {
+          console.log(response.data);
           if (response.data.status == 1) {
             const robotList = response.data.data.robot_list;
             const robotInfo = response.data.data.total_info;
@@ -474,13 +435,13 @@ export default {
             const daysOfvalue = task_day_info.map(function (x) {
               return x.d_cnt;
             });
-            const daysOflabel = task_day_info.map(function (x) {
-              return x.d_date;
-            });
+            // const daysOflabel = task_day_info.map(function (x) {
+            //   return x.d_date;
+            // });
             this.chartofday = {
               chartOptions: {
                 xaxis: {
-                  categories: daysOflabel,
+                  categories: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
                 },
               },
               series: [
@@ -517,6 +478,9 @@ export default {
         })
         .catch((error) => {
           console.log(error);
+          //logout
+          localStorage.removeItem("userData");
+          this.$router.replace("/login");
         });
     },
   },

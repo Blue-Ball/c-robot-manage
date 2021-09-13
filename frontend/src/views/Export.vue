@@ -245,18 +245,7 @@ export default {
       option: null,
       requestParam: "",
       robot_img: require("@/assets/images/robot/cbot.png"),
-      pdfData: [
-        // {
-        //   index: "",
-        //   data: {
-        //     rangeDate: "",
-        //     items: null,
-        //     robot_data: [],
-        //     chartofday: [],
-        //     chartofunit: [],
-        //   },
-        // },
-      ],
+      pdfData: [],
     };
   },
   created() {
@@ -301,33 +290,25 @@ export default {
     getWeeks() {
       let startDate = new Date(this.startDate);
       let lastdate = new Date(this.endDate);
-      let firstSunday = new Date(
+      let firstSatday = new Date(
         startDate.setDate(startDate.getDate() - startDate.getDay())
       );
-      let lastSatday = new Date(
+      let lastFriday = new Date(
         lastdate.setDate(lastdate.getDate() - lastdate.getDay() + 6)
       );
+      firstSatday = moment(firstSatday).subtract(1, "days");
+      lastFriday = moment(lastFriday).subtract(1, "days");
       var ajaxIndex = 0;
-      for (
-        let i = firstSunday;
-        i <= lastSatday;
-        i.setDate(i.getDate() - i.getDay() + 7)
-      ) {
-        const sunday = new Date(
-          firstSunday.setDate(firstSunday.getDate() - firstSunday.getDay())
-        );
-        const saturday = new Date(
-          firstSunday.setDate(firstSunday.getDate() - firstSunday.getDay() + 6)
-        );
+      let i;
+      for (i = firstSatday; i <= lastFriday; i = i.add(7, "days")) {
+        const sat = i;
+        const fri = moment(i).add(6, "days");
         this.requestParam = {
           robot_serial: 0,
-          start_date: sunday,
-          end_date: saturday,
+          start_date: sat.format("YYYY/MM/DD"),
+          end_date: fri.format("YYYY/MM/DD"),
         };
-        let rangeDate =
-          moment(sunday).format("DD.MM.YYYY") +
-          " ~ " +
-          moment(saturday).format("DD.MM.YYYY");
+        let rangeDate = sat.format("DD.MM.YYYY") + " ~ " + fri.format("DD.MM.YYYY");
         this.getDashboardData(this.requestParam, rangeDate, ajaxIndex++);
       }
     },
@@ -350,9 +331,9 @@ export default {
             const daysOfvalue = task_day_info.map(function (x) {
               return x.d_cnt;
             });
-            const daysOflabel = task_day_info.map(function (x) {
-              return x.d_date;
-            });
+            // const daysOflabel = task_day_info.map(function (x) {
+            //   return x.d_date;
+            // });
             const unitOfvalue = task_unit_info.map(function (x) {
               return x.u_cnt;
             });
@@ -409,7 +390,7 @@ export default {
                     show: false,
                   },
                   xaxis: {
-                    categories: daysOflabel,
+                    categories: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
                     position: "bottom",
                     axisBorder: {
                       show: false,
