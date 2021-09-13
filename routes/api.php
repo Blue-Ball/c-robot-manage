@@ -30,16 +30,13 @@ Route::group(['middleware' => 'api','prefix'=>'user'], function (){
 });
 
 Route::group(['middleware' => 'api','prefix'=>'robot'], function (){
-    Route::post('register','Api\RobotAuthController@robotRegister');
-    Route::post('login','Api\RobotAuthController@robotLogin');
-    Route::post('logout','Api\RobotAuthController@robotLogout');
-    Route::post('getRobotList','Api\RobotAuthController@getRobotList');
-    Route::post('changeRobotStatus','Api\RobotAuthController@changeRobotStatus');
-    Route::post('changeRobotPassword','Api\RobotAuthController@changeRobotPassword');
     Route::post('insert_corridor_disinfection','Api\RobotOperationController@insert_corridor_disinfection');
     Route::post('change_status_corridor_disinfection','Api\RobotOperationController@change_status_corridor_disinfection');
     Route::post('insert_room_disinfection','Api\RobotOperationController@insert_room_disinfection');
     Route::post('change_status_room_disinfection','Api\RobotOperationController@change_status_room_disinfection');
     Route::post('insert_hospital_rooms','Api\RobotOperationController@insert_hospital_rooms');
+    Route::post('getRobotList','Api\RobotOperationController@getRobotList');
+    Route::post('getRoomDisinfectionInfo','Api\RobotOperationController@getRoomDisinfectionInfo');
+    Route::post('getCorridorDisinfectionInfo','Api\RobotOperationController@getCorridorDisinfectionInfo');
 });
 

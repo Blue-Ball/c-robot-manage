@@ -28,9 +28,8 @@ return [
     'enter_spots_count' => 'Please enter spots count',
     'enter_duration' => 'Please enter duration',
     'enter_room_size' => 'Please enter room size',
-    'not_robot' => 'You are not robot',
-    'not_user' => 'You are not user',
     'incorrect_login_robot' => 'Incorrect serial or password or approve',
     'select_robot' => 'Please select an robot',
     'all_robot' => 'All robot',
+    'enter_table_id' => 'Please enter table id',
 ];
