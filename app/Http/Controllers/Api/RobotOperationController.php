@@ -33,10 +33,9 @@ class RobotOperationController extends Controller
     public function insert_corridor_disinfection(Request $request){
         if (auth()->check()) {
 
-            $user = auth()->user();
-            $robot_serial = $user->robot_serial;
+            $robot_serial = $request->robot_serial;
             if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-2',trans('main.not_robot'));
+                return $this->error('-2',trans('main.enter_robot_serial'));
             }
             
             if(empty($request->unit)){
@@ -82,10 +81,13 @@ class RobotOperationController extends Controller
 
     public function change_status_corridor_disinfection(Request $request){
         if (auth()->check()) {
-            $user = auth()->user();
-            $robot_serial = $user->robot_serial;
-            if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-2',trans('main.not_robot'));
+            if(empty($request->id)){
+                return $this->error('-2',trans('main.enter_table_id'));
+            }
+
+            $is_completed = 0;
+            if(!empty($request->is_completed)){
+                $is_completed = 1;
             }
 
             DB::table('corridor_disinfection_table')
@@ -100,10 +102,9 @@ class RobotOperationController extends Controller
     public function insert_room_disinfection(Request $request){
         if (auth()->check()) {
 
-            $user = auth()->user();
-            $robot_serial = $user->robot_serial;
+            $robot_serial = $request->robot_serial;
             if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-2',trans('main.not_robot'));
+                return $this->error('-2',trans('main.enter_robot_serial'));
             }
             
             if(empty($request->unit)){
@@ -149,10 +150,13 @@ class RobotOperationController extends Controller
 
     public function change_status_room_disinfection(Request $request){
         if (auth()->check()) {
-            $user = auth()->user();
-            $robot_serial = $user->robot_serial;
-            if(empty($robot_serial) || $robot_serial == ""){
-                return $this->error('-2',trans('main.not_robot'));
+            if(empty($request->id)){
+                return $this->error('-2',trans('main.enter_table_id'));
+            }
+
+            $is_completed = 0;
+            if(!empty($request->is_completed)){
+                $is_completed = 1;
             }
 
             DB::table('room_disinfection_table')
@@ -192,5 +196,93 @@ class RobotOperationController extends Controller
         }else{
             return $this->error(-1,trans('main.please_login'));
         }        
+    }
+
+    public function getRobotList(Request $request){
+        if (auth()->check()) {
+            $robot_infos = DB::table('robots_info_table')
+                ->select("robots_info_table.*")->get();
+            return $this->response($robot_infos);
+        }else{
+            return $this->error(-1,trans('main.please_login'));
+        }
+    }
+
+    public function getRoomDisinfectionInfo(Request $request){
+        if (auth()->check()) {
+            $query = DB::table('room_disinfection_table')
+                ->select("room_disinfection_table.*");                
+            if(!empty($request->unit)){
+                $query->where("unit", "=", $request->unit);
+            }
+            if(!empty($request->floor)){
+                $query->where("floor", "=", $request->floor);
+            }
+            if(!empty($request->room)){
+                $query->where("room", "=", $request->room);
+            }
+            if(!empty($request->spots_count)){
+                $query->where("spots_count", "=", $request->spots_count);
+            }
+            if(!empty($request->date)){
+                $query->whereRaw('DATEDIFF("'.$request->date.'", date) = ?', 0);
+            }
+            if(!empty($request->duration)){
+                $query->where("duration", "=", $request->duration);
+            }
+            if(!empty($request->is_completed)){
+                if($request->is_completed == 'completed'){
+                    $query->where("is_completed", "=", "1");
+                }else{
+                    $query->where("is_completed", "!=", "1");
+                }                
+            }
+            if(!empty($request->robot_serial)){
+                $query->where("robot_serial", "=", $request->robot_serial);
+            }
+            $result = $query->get();
+            return $this->response($result);
+        }else{
+            return $this->error(-1,trans('main.please_login'));
+        }
+    }
+
+    public function getCorridorDisinfectionInfo(Request $request){
+        if (auth()->check()) {
+            $query = DB::table('corridor_disinfection_table')
+                ->select("corridor_disinfection_table.*");                
+            if(!empty($request->unit)){
+                $query->where("unit", "=", $request->unit);
+            }
+            if(!empty($request->floor)){
+                $query->where("floor", "=", $request->floor);
+            }
+            if(!empty($request->corridor_number)){
+                $query->where("corridor_number", "=", $request->corridor_number);
+            }
+            if(!empty($request->spots_count)){
+                $query->where("spots_count", "=", $request->spots_count);
+            }
+            if(!empty($request->date)){
+                $query->whereRaw('DATEDIFF("'.$request->date.'", date) = ?', 0);
+            }
+            if(!empty($request->duration)){
+                $query->where("duration", "=", $request->duration);
+            }
+            if(!empty($request->is_completed)){
+                if($request->is_completed == 'completed'){
+                    $query->where("is_completed", "=", "1");
+                }else{
+                    $query->where("is_completed", "!=", "1");
+                }                
+            }
+            if(!empty($request->robot_serial)){
+                $query->where("robot_serial", "=", $request->robot_serial);
+            }
+            $result = $query->get();
+            return $this->response($result);
+        }else{
+            return $this->error(-1,trans('main.please_login'));
+        }
     }
 }
