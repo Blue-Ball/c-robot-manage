@@ -38,5 +38,6 @@ Route::group(['middleware' => 'api','prefix'=>'robot'], function (){
     Route::post('getRobotList','Api\RobotOperationController@getRobotList');
     Route::post('getRoomDisinfectionInfo','Api\RobotOperationController@getRoomDisinfectionInfo');
     Route::post('getCorridorDisinfectionInfo','Api\RobotOperationController@getCorridorDisinfectionInfo');
+    Route::post('robotRegister','Api\RobotOperationController@robotRegister');
 });
 
