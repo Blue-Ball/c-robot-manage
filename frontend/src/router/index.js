@@ -49,7 +49,8 @@ const router = new VueRouter({
         pageTitle: 'Map Detail',
         breadcrumb: [
           {
-            text: 'Hospital Map'
+            text: 'Hospital Map',
+            to:'/hospital-map'
           },
           {
             text: 'Map Detail',
@@ -67,7 +68,8 @@ const router = new VueRouter({
         pageTitle: 'Export PDF',
         breadcrumb: [
           {
-            text: 'Home'
+            text: 'Home',
+            to:'/home'
           },
           {
             text: 'Export PDF',
