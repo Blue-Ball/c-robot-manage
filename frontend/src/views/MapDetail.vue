@@ -466,7 +466,7 @@ export default {
             this.chartofday = {
               chartOptions: {
                 xaxis: {
-                  categories: daysOflabel,
+                  categories: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
                 },
               },
               series: [
