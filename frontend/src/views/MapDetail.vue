@@ -427,7 +427,7 @@ export default {
       // let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
       // this.startDate = moment(firstday).format("YYYY/MM/DD");
       // this.endDate = moment(lastday).format("YYYY/MM/DD");
-      this.getDashboardData(this.getRequestParam());
+      this.getDashboardData(this.getRequestParam(this.selectDate));
     },
 
     onDateChange: function (selectedDate, dateStr, instance) {
@@ -437,7 +437,7 @@ export default {
       // let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
       // this.startDate = moment(firstday).format("YYYY/MM/DD");
       // this.endDate = moment(lastday).format("YYYY/MM/DD");
-      this.getDashboardData(this.getRequestParam());
+      this.getDashboardData(this.getRequestParam(selectedDate));
     },
     getDashboardData(params) {
       axios
