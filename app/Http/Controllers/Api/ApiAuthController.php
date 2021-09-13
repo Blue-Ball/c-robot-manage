@@ -163,7 +163,6 @@ class ApiAuthController extends Controller
             if($user->is_admin){
                 $user_list = DB::table('users')
                     ->selectRaw('users.*')
-                    ->where('robot_serial','')
                     ->get();
                 return $this->response($user_list);
             }else{

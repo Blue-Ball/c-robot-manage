@@ -43,9 +43,6 @@ class ApiHospitalMapController extends Controller
     public function hospitalMap(Request $request){
         if (auth()->check()) {
             $user = auth()->user();
-            if(!empty($user->robot_serial)){
-                return $this->error(-2,trans('main.not_user'));
-            }
             $unit_list = DB::table('hospital_rooms_table')
                 ->selectRaw('hospital_rooms_table.unit')
                 ->groupBy('hospital_rooms_table.unit')

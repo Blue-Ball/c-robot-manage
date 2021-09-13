@@ -37,9 +37,6 @@ class ApiDashboardController extends Controller
     public function dashboard(Request $request){
         if (auth()->check()) {
             $user = auth()->user();
-            if(!empty($user->robot_serial)){
-                return $this->error(-2,trans('main.not_user'));
-            }
             $dashboard_info = array();
 
             $robot_serial = 0;
