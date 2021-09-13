@@ -374,12 +374,12 @@ export default {
     };
   },
   mounted() {
-    let curr = new Date();
-    let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-    let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
-    this.startDate = moment(firstday).format("YYYY/MM/DD");
-    this.endDate = moment(lastday).format("YYYY/MM/DD");
-    this.selectDate = curr;
+    // let curr = new Date();
+    // let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+    // let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+    // this.startDate = moment(firstday).format("YYYY/MM/DD");
+    // this.endDate = moment(lastday).format("YYYY/MM/DD");
+    // this.selectDate = curr;
     if (this.$route.params.room) {
       axios
         .post("/api/user/getRobotList", "", {
@@ -400,7 +400,18 @@ export default {
   },
 
   methods: {
-    getRequestParam: function () {
+    getRequestParam: function (selectDate = null) {
+      let curr = new Date();
+      if (selectDate == null) curr = curr;
+      else curr = new Date(selectDate);
+
+      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+
+      this.startDate = moment(firstday).subtract(1, "days").format("YYYY/MM/DD");
+      this.endDate = moment(lastday).subtract(1, "days").format("YYYY/MM/DD");
+      this.selectDate = curr;
+      console.log(this.startDate, this.endDate);
       return (this.requestParam = {
         robot_serial: this.setRobot,
         start_date: this.startDate,
@@ -411,21 +422,21 @@ export default {
       });
     },
     selected_robot() {
-      let curr = new Date(this.selectDate);
-      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
-      this.startDate = moment(firstday).format("YYYY/MM/DD");
-      this.endDate = moment(lastday).format("YYYY/MM/DD");
+      // let curr = new Date(this.selectDate);
+      // let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      // let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+      // this.startDate = moment(firstday).format("YYYY/MM/DD");
+      // this.endDate = moment(lastday).format("YYYY/MM/DD");
       this.getDashboardData(this.getRequestParam());
     },
 
     onDateChange: function (selectedDate, dateStr, instance) {
       this.selectDate = selectedDate;
-      let curr = new Date(this.selectDate);
-      let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
-      let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
-      this.startDate = moment(firstday).format("YYYY/MM/DD");
-      this.endDate = moment(lastday).format("YYYY/MM/DD");
+      // let curr = new Date(this.selectDate);
+      // let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
+      // let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
+      // this.startDate = moment(firstday).format("YYYY/MM/DD");
+      // this.endDate = moment(lastday).format("YYYY/MM/DD");
       this.getDashboardData(this.getRequestParam());
     },
     getDashboardData(params) {
