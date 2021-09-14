@@ -371,7 +371,8 @@ class ApiDashboardController extends Controller
                             ,room_disinfection_table.is_completed")
                         ->unionAll($corridor_sql);
                 }, 'a')
-                ->selectRaw("SUM(a.spots_count) AS d_cnt,a.d_date")                
+                // ->selectRaw("SUM(a.spots_count) AS d_cnt,a.d_date") 
+                ->selectRaw("COUNT(*) AS d_cnt,a.d_date")                
                 ->whereRaw('DATEDIFF("'.$start_date.'", a.d_date) <= ?', 0)
                 ->whereRaw('DATEDIFF(a.d_date, "'.$end_date.'") <= ?', 0)
                 ->where("a.is_completed", "=", 1)
@@ -395,7 +396,8 @@ class ApiDashboardController extends Controller
                             ,room_disinfection_table.room
                             ,room_disinfection_table.is_completed");
                 }, 'a')
-                ->selectRaw("SUM(a.spots_count) AS d_cnt,a.d_date")                
+                // ->selectRaw("SUM(a.spots_count) AS d_cnt,a.d_date") 
+                ->selectRaw("COUNT(a.spots_count) AS d_cnt,a.d_date")                
                 ->whereRaw('DATEDIFF("'.$start_date.'", a.d_date) <= ?', 0)
                 ->whereRaw('DATEDIFF(a.d_date, "'.$end_date.'") <= ?', 0)
                 ->where("a.unit", "=", $unit)
@@ -474,7 +476,8 @@ class ApiDashboardController extends Controller
         $query .= " ,IFNULL(aa.d_cnt,0) AS u_cnt ";
         $query .= " FROM hospital_rooms_table bb";
         $query .= " LEFT JOIN ( ";
-            $query .= " SELECT SUM(a.spots_count) AS d_cnt,a.unit ";
+            // $query .= " SELECT SUM(a.spots_count) AS d_cnt,a.unit ";
+            $query .= " SELECT COUNT(*) AS d_cnt,a.unit ";
             $query .= " FROM ( ";
                 $query .= " SELECT room_disinfection_table.spots_count ";
                 $query .= " ,room_disinfection_table.date ";
