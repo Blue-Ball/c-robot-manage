@@ -42,24 +42,7 @@ export default {
   },
   data() {
     return {
-      sets: [
-        {
-          id: "Emergency",
-          floor_data: [
-            {
-              id: "1",
-              room: [
-                {
-                  id: 1,
-                },
-                {
-                  id: 2,
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      sets: [],
     };
   },
   mounted() {
