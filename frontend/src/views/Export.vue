@@ -282,7 +282,7 @@ export default {
       });
       // worker = worker.save();
       worker = worker.save().then(function () {
-        console.log("finishLoading");
+        // console.log("finishLoading");
         document.getElementById("loader").style.display = "none";
         document.getElementById("download_btn").disabled = false;
       });
