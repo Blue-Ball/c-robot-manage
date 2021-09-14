@@ -32,4 +32,5 @@ return [
     'select_robot' => 'Please select an robot',
     'all_robot' => 'All robot',
     'enter_table_id' => 'Please enter table id',
+    'enter_user_id' => 'Please enter user',
 ];
