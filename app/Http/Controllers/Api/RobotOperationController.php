@@ -50,7 +50,11 @@ class RobotOperationController extends Controller
         }
         if(empty($request->duration)){
             return $this->error('-2',trans('main.enter_duration'));
-        }    
+        } 
+
+        if(empty($request->date)){
+            return $this->error('-2',trans('main.enter_date'));
+        }   
         
         $is_completed = 0;
         if(!empty($request->is_completed)){
@@ -65,7 +69,7 @@ class RobotOperationController extends Controller
             'spots_count'       => $request->spots_count,
             'is_completed'      => $is_completed,
             'robot_serial'      => $robot_serial,
-            'date'              => date('Y-m-d H:i:s'),
+            'date'              => $request->date,
             'created_at'        => time()            
         ];    
 
@@ -110,7 +114,11 @@ class RobotOperationController extends Controller
         }
         if(empty($request->duration)){
             return $this->error('-2',trans('main.enter_duration'));
-        }    
+        } 
+        
+        if(empty($request->date)){
+            return $this->error('-2',trans('main.enter_date'));
+        } 
         
         $is_completed = 0;
         if(!empty($request->is_completed)){
@@ -125,7 +133,7 @@ class RobotOperationController extends Controller
             'spots_count'       => $request->spots_count,
             'is_completed'      => $is_completed,
             'robot_serial'      => $robot_serial,
-            'date'              => date('Y-m-d H:i:s'),
+            'date'              => $request->date,
             'created_at'        => time()            
         ]; 
         $result = RoomDisinfection::create($newData);            

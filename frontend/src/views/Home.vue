@@ -388,15 +388,20 @@ export default {
   methods: {
     getRequestParams: function (selectDate = null) {
       let curr = new Date();
-      if (selectDate == null) curr = curr;
-      else curr = new Date(selectDate);
+      if (selectDate == null){
+        curr = curr;
+        this.selectDate = new Date();
+      }else {
+        curr = new Date(selectDate);
+        this.selectDate = curr;
+      }
 
       let firstday = new Date(curr.setDate(curr.getDate() - curr.getDay()));
       let lastday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));
 
       this.startDate = moment(firstday).subtract(1, "days").format("YYYY/MM/DD");
       this.endDate = moment(lastday).subtract(1, "days").format("YYYY/MM/DD");
-      this.selectDate = curr;
+
       // console.log(this.startDate, this.endDate);
       this.requestParam = {
         robot_serial: this.setRobot,
