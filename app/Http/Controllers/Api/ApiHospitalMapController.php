@@ -43,8 +43,10 @@ class ApiHospitalMapController extends Controller
     public function hospitalMap(Request $request){
         if (auth()->check()) {
             $user = auth()->user();
+            $user_id = $user->id;
             $unit_list = DB::table('hospital_rooms_table')
                 ->selectRaw('hospital_rooms_table.unit')
+                ->where("hospital_rooms_table.user_id", "=", $user_id)
                 ->groupBy('hospital_rooms_table.unit')
                 ->get();
             // $query = DB::table('hospital_rooms_table')
