@@ -76,6 +76,7 @@ class ApiHospitalMapController extends Controller
                 $floor_list = DB::table('hospital_rooms_table')
                     ->selectRaw("floor")
                     ->whereRaw("unit='".$row_u->unit."'")
+                    ->where("user_id", "=", $user_id)
                     ->groupBy('floor')
                     ->orderBy('floor', 'desc')
                     ->get();
@@ -88,6 +89,7 @@ class ApiHospitalMapController extends Controller
                     $rooms_list = DB::table('hospital_rooms_table')
                         ->selectRaw("room_number")
                         ->whereRaw("unit='".$row_u->unit."' AND floor='".$row_f->floor."'")
+                        ->where("user_id", "=", $user_id)
                         ->orderBy('room_number', 'asc')->get();
                     
                     foreach($rooms_list as $row_r){
