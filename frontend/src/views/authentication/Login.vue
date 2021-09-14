@@ -178,7 +178,7 @@ export default {
             .post("/api/user/login", data)
             .then((response) => {
               if (response.data.status == 1) {
-                console.log("response = ", response);
+                // console.log("response = ", response);
                 const userData = response.data.data.user;
                 useJwt.setToken(response.data.data.access_token);
                 useJwt.setRefreshToken(response.data.data.access_token);

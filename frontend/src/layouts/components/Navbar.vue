@@ -207,7 +207,7 @@ export default {
       this.$nextTick(() => {
         this.$refs["my-modal"].toggle("#toggle-btn");
       });
-      console.log(this.startDate, this.endDate);
+      // console.log(this.startDate, this.endDate);
 
       this.$router.push("/export/" + this.startDate + "/" + this.endDate);
       // this.$route.params.pathMatch;

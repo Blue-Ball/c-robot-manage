@@ -396,7 +396,7 @@ export default {
           console.log(error);
         });
     }
-    console.log("this.isRobot = ", this.isRobot);
+    // console.log("this.isRobot = ", this.isRobot);
   },
 
   methods: {
@@ -411,7 +411,7 @@ export default {
       this.startDate = moment(firstday).subtract(1, "days").format("YYYY/MM/DD");
       this.endDate = moment(lastday).subtract(1, "days").format("YYYY/MM/DD");
       this.selectDate = curr;
-      console.log(this.startDate, this.endDate);
+      // console.log(this.startDate, this.endDate);
       return (this.requestParam = {
         robot_serial: this.setRobot,
         start_date: this.startDate,
