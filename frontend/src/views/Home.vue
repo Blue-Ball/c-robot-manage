@@ -378,7 +378,7 @@ export default {
         console.log(error);
       });
 
-    console.log("this.isRobot = ", this.isRobot);
+    // console.log("this.isRobot = ", this.isRobot);
   },
   created() {
     if (this.$route.params.unit) {
@@ -397,7 +397,7 @@ export default {
       this.startDate = moment(firstday).subtract(1, "days").format("YYYY/MM/DD");
       this.endDate = moment(lastday).subtract(1, "days").format("YYYY/MM/DD");
       this.selectDate = curr;
-      console.log(this.startDate, this.endDate);
+      // console.log(this.startDate, this.endDate);
       this.requestParam = {
         robot_serial: this.setRobot,
         start_date: this.startDate,
@@ -421,7 +421,7 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.status == 1) {
             const robotList = response.data.data.robot_list;
             const robotInfo = response.data.data.total_info;
