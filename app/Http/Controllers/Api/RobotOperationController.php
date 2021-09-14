@@ -148,29 +148,37 @@ class RobotOperationController extends Controller
         return $this->response(['message'=>trans('main.updated_success')]);        
     }
 
-    public function insert_hospital_rooms(Request $request){            
-        if(empty($request->unit)){
-            return $this->error('-2',trans('main.enter_unit'));
-        }
-        if(empty($request->floor)){
-            return $this->error('-2',trans('main.enter_floor'));
-        }
-        if(empty($request->room_number)){
-            return $this->error('-2',trans('main.enter_room_number'));
-        }
-        if(empty($request->room_size)){
-            return $this->error('-2',trans('main.enter_room_size'));
-        } 
+    public function insert_hospital_rooms(Request $request){ 
+        if (auth()->check()) {
+            $user = auth()->user();
+            $user_id = $user->id;
 
-        $result = DB::table('hospital_rooms_table')->insert([
-            'unit'              => $request->unit,
-            'floor'             => $request->floor,
-            'room_number'       => $request->room_number,
-            'room_size'         => $request->room_size,
-            'creation_date'     => date('Y-m-d H:i:s'),
-            'last_edit_date'    => date('Y-m-d H:i:s')
-        ]);            
-        return $this->response($result);       
+            if(empty($request->unit)){
+                return $this->error('-2',trans('main.enter_unit'));
+            }
+            if(empty($request->floor)){
+                return $this->error('-2',trans('main.enter_floor'));
+            }
+            if(empty($request->room_number)){
+                return $this->error('-2',trans('main.enter_room_number'));
+            }
+            if(empty($request->room_size)){
+                return $this->error('-2',trans('main.enter_room_size'));
+            } 
+
+            $result = DB::table('hospital_rooms_table')->insert([
+                'unit'              => $request->unit,
+                'floor'             => $request->floor,
+                'room_number'       => $request->room_number,
+                'room_size'         => $request->room_size,
+                'user_id'           => $user_id,
+                'creation_date'     => date('Y-m-d H:i:s'),
+                'last_edit_date'    => date('Y-m-d H:i:s')
+            ]);            
+            return $this->response($result); 
+        }else{
+            return $this->error(-1,trans('main.please_login'));
+        }      
     }
 
     public function getRobotList(Request $request){

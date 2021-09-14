@@ -16,6 +16,7 @@ class HospitalRooms extends Model
         'unit',
         'floor',
         'room_number',
+        'user_id',
         'room_size',
         'creation_date',
         'last_edit_date',
