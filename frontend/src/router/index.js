@@ -69,7 +69,7 @@ const router = new VueRouter({
         breadcrumb: [
           {
             text: 'Home',
-            to:'/home'
+            to:'/'
           },
           {
             text: 'Export PDF',

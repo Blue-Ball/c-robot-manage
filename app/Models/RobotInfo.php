@@ -16,6 +16,7 @@ class RobotInfo extends Model
         'robot_name',
         'robot_password',
         'robot_number',
+        'user_id',
     ];
 
     protected $table = 'robots_info_table';

@@ -250,37 +250,45 @@ class RobotOperationController extends Controller
     }
 
     public function robotRegister(Request $request){ 
+        if (auth()->check()) {
+            
+            $user = auth()->user();
+            $user_id = $user->id;
         
-        if(empty($request->serial)){
-            return $this->error('-2',trans('main.enter_robot_serial'));
-        }
+            if(empty($request->serial)){
+                return $this->error('-2',trans('main.enter_robot_serial'));
+            }
 
-        if(empty($request->name)){
-            return $this->error('-2',trans('main.enter_robot_name'));
-        }
+            if(empty($request->name)){
+                return $this->error('-2',trans('main.enter_robot_name'));
+            }
 
-        if(empty($request->password)) {
-            return $this->error('-2',trans('main.pass_confirmation_same'));
-        }
+            if(empty($request->password)) {
+                return $this->error('-2',trans('main.pass_confirmation_same'));
+            }
 
-        if(empty($request->number)){
-            return $this->error('-2',trans('main.enter_robot_number'));
-        }
+            if(empty($request->number)){
+                return $this->error('-2',trans('main.enter_robot_number'));
+            }
 
-        $duplicateSerial = RobotInfo::where('robot_serial',$request->serial)->first();
-        if($duplicateSerial) {
-            return $this->error(-2,trans('main.robot_exists'));
-        }
+            $duplicateSerial = RobotInfo::where('robot_serial',$request->serial)->first();
+            if($duplicateSerial) {
+                return $this->error(-2,trans('main.robot_exists'));
+            }
 
-        $newRobot = [
-            'robot_serial'      => $request->serial,
-            'robot_name'        => $request->name,
-            'robot_password'    => $request->password,
-            'robot_number'      => $request->number,
-            'created_at'    => time() 
-        ];
-        RobotInfo::create($newRobot);
-        
-        return $this->response(['message'=>trans('main.thanks_reg')]);
+            $newRobot = [
+                'robot_serial'      => $request->serial,
+                'robot_name'        => $request->name,
+                'robot_password'    => $request->password,
+                'robot_number'      => $request->number,
+                'user_id'           => $user_id,
+                'created_at'        => time() 
+            ];
+            RobotInfo::create($newRobot);
+            
+            return $this->response(['message'=>trans('main.thanks_reg')]);
+        }else{
+            return $this->error(-1,trans('main.please_login'));
+        }
     }
 }
