@@ -401,7 +401,7 @@ export default {
 
       this.startDate = moment(firstday).subtract(1, "days").format("YYYY/MM/DD");
       this.endDate = moment(lastday).subtract(1, "days").format("YYYY/MM/DD");
-      
+
       // console.log(this.startDate, this.endDate);
       this.requestParam = {
         robot_serial: this.setRobot,
