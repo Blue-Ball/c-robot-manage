@@ -304,7 +304,8 @@ class ApiDashboardController extends Controller
                 ->where("a.is_completed", "=", 1)
                 ->whereRaw('DATEDIFF("'.$start_date.'", a.date) <= ?', 0)
                 ->whereRaw('DATEDIFF(a.date, "'.$end_date.'") <= ?', 0)
-                ->orderBy('a.date', 'desc');
+                ->orderBy('a.date', 'desc')
+                ->limit(8);
             if(!empty($robot_serial)){
                 $query->where("a.robot_serial", "=", $robot_serial);
             }else{
@@ -323,7 +324,8 @@ class ApiDashboardController extends Controller
                 ->where("room_disinfection_table.unit", "=", $unit)
                 ->where("room_disinfection_table.floor", "=", $floor)
                 ->where("room_disinfection_table.room", "=", $room)
-                ->orderBy('room_disinfection_table.date', 'desc');
+                ->orderBy('room_disinfection_table.date', 'desc')
+                ->limit(8);
             if(!empty($robot_serial)){
                 $query->where("room_disinfection_table.robot_serial", "=", $robot_serial);
             }else{
