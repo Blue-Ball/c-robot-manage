@@ -5,6 +5,7 @@ import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth
 
 Vue.use(VueRouter)
 
+const DEFAULT_TITLE = 'C-Bot';
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -83,6 +84,7 @@ const router = new VueRouter({
       name: 'login',
       component: () => import('@/views/authentication/Login.vue'),
       meta: {
+        pageTitle: 'Login',
         layout: 'full',
         resource: 'Auth',
         redirectIfLoggedIn: true,
@@ -93,6 +95,7 @@ const router = new VueRouter({
       name: 'auth-register',
       component: () => import('@/views/authentication/Register.vue'),
       meta: {
+        pageTitle: 'Register',
         layout: 'full',
         resource: 'Auth',
         redirectIfLoggedIn: true,
@@ -145,12 +148,15 @@ router.beforeEach((to, _, next) => {
 
 // ? For splash screen
 // Remove afterEach hook if you are not using splash screen
-router.afterEach(() => {
+router.afterEach((to) => {
   // Remove initial loading
   const appLoading = document.getElementById('loading-bg')
   if (appLoading) {
     appLoading.style.display = 'none'
   }
+  Vue.nextTick(() => {
+    document.title = to.meta.pageTitle || DEFAULT_TITLE;
+});
 })
 
 export default router

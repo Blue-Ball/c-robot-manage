@@ -4,8 +4,13 @@
       <!-- Register v1 -->
       <b-card class="mb-0">
         <b-link class="brand-logo">
-          <vuexy-logo />
-          <h2 class="brand-text text-primary ml-1">Vuexy</h2>
+          <!-- <vuexy-logo />
+          <h2 class="brand-text text-primary ml-1">Vuexy</h2> -->
+          <b-img 
+            :src="skin === 'dark' ? appLogoImageDark : appLogoImage"
+            alt="logo" 
+            class="logo-img" fluid 
+          />
         </b-link>
 
         <!-- form -->
@@ -154,6 +159,7 @@ import {
   BInputGroup,
   BInputGroupAppend,
   BFormCheckbox,
+  BImg,
 } from "bootstrap-vue";
 import VuexyLogo from "@core/layouts/components/Logo.vue";
 import { required, email } from "@validations";
@@ -161,6 +167,8 @@ import { togglePasswordVisibility } from "@core/mixins/ui/forms";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { getHomeRouteForRegister } from "@/auth/utils";
 import axios from "axios";
+import { $themeConfig } from '@themeConfig'
+import useAppConfig from '@core/app-config/useAppConfig'
 
 export default {
   components: {
@@ -180,6 +188,17 @@ export default {
     // validations
     ValidationProvider,
     ValidationObserver,
+    BImg,
+  },
+  setup() {
+    const { skin } = useAppConfig()
+    const { appName, appLogoImage, appLogoImageDark  } = $themeConfig.app
+    return {
+      skin,
+      appName,
+      appLogoImage,
+      appLogoImageDark,
+    }
   },
   mixins: [togglePasswordVisibility],
   data() {
@@ -248,4 +267,8 @@ export default {
 
 <style lang="scss">
 @import "@core/scss/vue/pages/page-auth.scss";
+.logo-img {
+    width: 65px;
+    height: 20px;
+  }
 </style>
