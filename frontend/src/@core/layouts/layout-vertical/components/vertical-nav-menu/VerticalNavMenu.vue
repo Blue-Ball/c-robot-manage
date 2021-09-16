@@ -24,15 +24,16 @@
               class="navbar-brand"
               to="/"
             >
-              <span class="brand-logo">
+              <span class="">
                 <b-img
-                  :src="appLogoImage"
+                  :src="skin === 'dark' ? appLogoImageDark : appLogoImage"
                   alt="logo"
+                  class="logo-img"
                 />
               </span>
-              <h2 class="brand-text">
+              <!-- <h2 class="brand-text">
                 {{ appName }}
-              </h2>
+              </h2> -->
             </b-link>
           </li>
 
@@ -131,7 +132,7 @@ export default {
     const collapseTogglerIconFeather = computed(() => (collapseTogglerIcon.value === 'unpinned' ? 'CircleIcon' : 'DiscIcon'))
 
     // App Name
-    const { appName, appLogoImage } = $themeConfig.app
+    const { appName, appLogoImage, appLogoImageDark } = $themeConfig.app
 
     return {
       navMenuItems,
@@ -152,6 +153,7 @@ export default {
       // App Name
       appName,
       appLogoImage,
+      appLogoImageDark,
     }
   },
 }
@@ -159,4 +161,8 @@ export default {
 
 <style lang="scss">
 @import "~@core/scss/base/core/menu/menu-types/vertical-menu.scss";
+.logo-img {
+    width: 55px;
+    height: 20px;
+  }
 </style>

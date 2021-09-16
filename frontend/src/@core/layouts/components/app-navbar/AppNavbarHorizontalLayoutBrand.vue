@@ -6,15 +6,16 @@
           class="navbar-brand"
           to="/"
         >
-          <span class="brand-logo">
+          <span class="">
             <b-img
-              :src="appLogoImage"
+              :src="skin === 'dark' ? appLogoImageDark : appLogoImage"
               alt="logo"
+              class="logo-img"
             />
           </span>
-          <h2 class="brand-text mb-0">
+          <!-- <h2 class="brand-text mb-0">
             {{ appName }}
-          </h2>
+          </h2> -->
         </b-link>
       </li>
     </ul>
@@ -32,15 +33,19 @@ export default {
   },
   setup() {
     // App Name
-    const { appName, appLogoImage } = $themeConfig.app
+    const { appName, appLogoImage, appLogoImageDark } = $themeConfig.app
     return {
       appName,
       appLogoImage,
+      appLogoImageDark,
     }
   },
 }
 </script>
 
 <style>
-
+.logo-img {
+    width: 55px;
+    height: 20px;
+  }
 </style>

@@ -279,8 +279,10 @@ class ApiDashboardController extends Controller
         $total_info = array();
         $total_info['total_useage_time'] = $total_useage_time;
         $total_info['average_useage_duration'] = $average_useage_duration;
-        $total_info['rooms_disinfected_count'] = $room_completed_count;
-        $total_info['corridor_disinfected_count'] = $corridor_completed_count;
+        // $total_info['rooms_disinfected_count'] = $room_completed_count;
+        // $total_info['corridor_disinfected_count'] = $corridor_completed_count;
+        $total_info['rooms_disinfected_count'] = $rooms_count;
+        $total_info['corridor_disinfected_count'] = $corridor_count;
         $total_info['completed_tasks'] = $completed_tasks;
         // print_r($total_info);
         return $total_info;        
@@ -301,7 +303,7 @@ class ApiDashboardController extends Controller
                         ->unionAll($corridor_sql);
                 }, 'a')
                 ->selectRaw("a.*")                
-                ->where("a.is_completed", "=", 1)
+                // ->where("a.is_completed", "=", 1)
                 ->whereRaw('DATEDIFF("'.$start_date.'", a.date) <= ?', 0)
                 ->whereRaw('DATEDIFF(a.date, "'.$end_date.'") <= ?', 0)
                 ->orderBy('a.date', 'desc')
@@ -318,7 +320,7 @@ class ApiDashboardController extends Controller
                 ->selectRaw("room_disinfection_table.unit,room_disinfection_table.floor
                     ,room_disinfection_table.duration,room_disinfection_table.date
                     ,room_disinfection_table.robot_serial")                
-                ->where("room_disinfection_table.is_completed", "=", 1)
+                // ->where("room_disinfection_table.is_completed", "=", 1)
                 ->whereRaw('DATEDIFF("'.$start_date.'", room_disinfection_table.date) <= ?', 0)
                 ->whereRaw('DATEDIFF(room_disinfection_table.date, "'.$end_date.'") <= ?', 0)
                 ->where("room_disinfection_table.unit", "=", $unit)
@@ -377,7 +379,7 @@ class ApiDashboardController extends Controller
                 ->selectRaw("COUNT(*) AS d_cnt,a.d_date")                
                 ->whereRaw('DATEDIFF("'.$start_date.'", a.d_date) <= ?', 0)
                 ->whereRaw('DATEDIFF(a.d_date, "'.$end_date.'") <= ?', 0)
-                ->where("a.is_completed", "=", 1)
+                // ->where("a.is_completed", "=", 1)
                 ->groupBy('a.d_date')
                 ->orderBy('a.d_date', 'ASC');
             if(!empty($robot_serial)){
@@ -405,7 +407,7 @@ class ApiDashboardController extends Controller
                 ->where("a.unit", "=", $unit)
                 ->where("a.floor", "=", $floor)
                 ->where("a.room", "=", $room)
-                ->where("a.is_completed", "=", 1)
+                // ->where("a.is_completed", "=", 1)
                 ->groupBy('a.d_date')
                 ->orderBy('a.d_date', 'ASC');
             if(!empty($robot_serial)){
@@ -516,7 +518,7 @@ class ApiDashboardController extends Controller
                 $query .= " AND a.floor = '".$floor."' ";
                 $query .= " AND a.room = '".$room."' ";
             }
-            $query .= " AND a.is_completed = 1";
+            // $query .= " AND a.is_completed = 1";
             $query .= " GROUP BY a.unit ";
             $query .= " ORDER BY a.unit ASC ";
             $query .= " ) aa ON  bb.unit = aa.unit ";
